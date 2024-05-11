@@ -9,12 +9,6 @@ export function displayUserMessage(plugin: MAXPlugin, settings: MAXSettings, mes
 
 	const userMessageDiv = document.createElement('div');
 	userMessageDiv.className = 'userMessage';
-	userMessageDiv.style.backgroundColor = colorToHex(
-		settings.appearance.userMessageBackgroundColor ||
-			getComputedStyle(document.body).getPropertyValue(DEFAULT_SETTINGS.appearance.userMessageBackgroundColor).trim()
-	);
-
-	userMessageDiv.style.color = settings.appearance.userMessageFontColor || DEFAULT_SETTINGS.appearance.userMessageFontColor;
 
 	const userMessageToolBarDiv = document.createElement('div');
 	userMessageToolBarDiv.className = 'userMessageToolBar';
