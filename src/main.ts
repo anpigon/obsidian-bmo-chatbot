@@ -19,6 +19,8 @@ export default class MAXPlugin extends Plugin {
 
 		Logger.setLogLevel(this.settings?.isVerbose ? LogLvl.DEBUG : LogLvl.DISABLED);
 
+		Logger.info('debug mode: on');
+
 		const folderPath = this.settings?.profiles.profileFolderPath || DEFAULT_SETTINGS.profiles.profileFolderPath;
 
 		const defaultFilePath = `${folderPath}/${DEFAULT_SETTINGS.profiles.profile}`;
