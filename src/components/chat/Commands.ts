@@ -226,6 +226,7 @@ export async function commandProfile(input: string, settings: MAXSettings, plugi
 		let inputValue = input.split(' ').slice(1).join(' ').trim();
 
 		// Remove quotation marks if present
+		// eslint-disable-next-line quotes
 		if ((inputValue.startsWith('"') && inputValue.endsWith('"')) || (inputValue.startsWith("'") && inputValue.endsWith("'"))) {
 			inputValue = inputValue.substring(1, inputValue.length - 1);
 		}
@@ -329,6 +330,7 @@ export async function commandPrompt(input: string, settings: MAXSettings, plugin
 		let inputValue = input.split(' ').slice(1).join(' ').trim();
 
 		// Remove quotation marks if present
+		// eslint-disable-next-line quotes
 		if ((inputValue.startsWith('"') && inputValue.endsWith('"')) || (inputValue.startsWith("'") && inputValue.endsWith("'"))) {
 			inputValue = inputValue.substring(1, inputValue.length - 1);
 		}
@@ -519,7 +521,7 @@ export async function commandMaxTokens(input: string, settings: MAXSettings, plu
 // }
 
 // `/append` to append current chat history to current active note.
-export async function commandAppend(plugin: MAXPlugin, settings: MAXSettings) {
+export async function commandAppend(this: any, plugin: MAXPlugin, settings: MAXSettings) {
 	let markdownContent = '';
 
 	const activeFile = plugin.app.workspace.getActiveFile();
@@ -545,9 +547,9 @@ export async function commandAppend(plugin: MAXPlugin, settings: MAXSettings) {
 		const chatbotNameText = chatbotNames.length > 0 && chatbotNames[0].textContent ? chatbotNames[0].textContent.toUpperCase() : 'ASSISTANT';
 
 		// Check and read the JSON file
-		if (await this.app.vault.adapter.exists(filenameMessageHistoryJSON(plugin))) {
+		if (await this!.app.vault.adapter.exists(filenameMessageHistoryJSON(plugin))) {
 			try {
-				const jsonContent = await this.app.vault.adapter.read(filenameMessageHistoryJSON(plugin));
+				const jsonContent = await this!.app.vault.adapter.read(filenameMessageHistoryJSON(plugin));
 				const messages = JSON.parse(jsonContent);
 
 				// Filter out messages starting with '/', and the assistant's response immediately following it
@@ -578,7 +580,8 @@ export async function commandAppend(plugin: MAXPlugin, settings: MAXSettings) {
 				const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 				const botMessageDiv = displayCommandBotMessage(plugin, settings, messageHistory, commandBotMessage);
 				messageContainer.appendChild(botMessageDiv);
-			} catch (error) {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			} catch (error: any) {
 				const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 				const botMessageDiv = displayCommandBotMessage(plugin, settings, messageHistory, error);
 				messageContainer.appendChild(botMessageDiv);
@@ -703,7 +706,8 @@ export async function commandSave(plugin: MAXPlugin, settings: MAXSettings) {
 				const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 				const botMessageDiv = displayCommandBotMessage(plugin, settings, messageHistory, commandBotMessage);
 				messageContainer.appendChild(botMessageDiv);
-			} catch (error) {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			} catch (error: any) {
 				const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 				const botMessageDiv = displayCommandBotMessage(plugin, settings, messageHistory, error);
 				messageContainer.appendChild(botMessageDiv);

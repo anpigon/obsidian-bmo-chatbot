@@ -130,7 +130,13 @@ export function displayCommandBotMessage(plugin: MAXPlugin, settings: MAXSetting
 	return botMessageDiv;
 }
 
-export function displayErrorBotMessage(plugin: MAXPlugin, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
+export function displayErrorBotMessage(
+	this: any,
+	plugin: MAXPlugin,
+	settings: MAXSettings,
+	messageHistory: {role: string; content: string}[],
+	message: string
+) {
 	const botMessageDiv = document.createElement('div');
 	botMessageDiv.className = 'botMessage';
 	botMessageDiv.style.backgroundColor = colorToHex(
