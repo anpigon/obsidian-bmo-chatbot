@@ -24,3 +24,4 @@ data/*
 
 # Version
 version-bump.mjs
+build
