@@ -1,6 +1,6 @@
 import {DropdownComponent, Notice, Setting, SettingTab, setIcon} from 'obsidian';
-import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
-import {ANTHROPIC_MODELS} from 'src/view';
+import MAXPlugin from '@/main';
+import {ANTHROPIC_MODELS} from '@/view';
 import {
 	fetchGoogleGeminiModels,
 	fetchMistralModels,
@@ -9,15 +9,15 @@ import {
 	fetchOpenRouterModels,
 	fetchRESTAPIURLModels,
 } from '../FetchModelList';
-import {DEFAULT_MODEL} from '../../constants';
+import {DEFAULT_MODEL, DEFAULT_SETTINGS} from '../../constants';
 
-export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'General'});
 
-	const initialState = plugin.settings.toggleGeneralSettings;
+	const initialState = plugin.settings!.toggleGeneralSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -33,11 +33,11 @@ export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGP
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleGeneralSettings = false;
+			plugin.settings!.toggleGeneralSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleGeneralSettings = true;
+			plugin.settings!.toggleGeneralSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -47,17 +47,17 @@ export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGP
 		.setDesc('Choose a model.')
 		.addDropdown(async dropdown => {
 			await populateDropdownWithModels(plugin, dropdown);
-			dropdown.setValue(plugin.settings.general.model).onChange(async value => {
-				plugin.settings.general.model = value;
+			dropdown.setValue(plugin.settings!.general.model).onChange(async value => {
+				plugin.settings!.general.model = value;
 				await plugin.saveSettings();
 				const modelName = document.querySelector('#modelName') as HTMLHeadingElement;
 				if (modelName) {
-					modelName.textContent = `model: ${plugin.settings.general.model.toLowerCase()}`;
+					modelName.textContent = `model: ${plugin.settings!.general.model.toLowerCase()}`;
 				}
 			});
 		});
 
-	// const currentProfileFile = `${plugin.settings.profiles.profileFolderPath}/${plugin.settings.profiles.profile}`
+	// const currentProfileFile = `${plugin.settings!.profiles.profileFolderPath}/${plugin.settings!.profiles.profile}`
 	// const currentProfile = plugin.app.vault.getAbstractFileByPath(currentProfileFile) as TFile;
 
 	// new Setting(settingsContainer)
@@ -65,12 +65,12 @@ export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGP
 	//     .setDesc('System role prompt.')
 	//     .addTextArea(text => text
 	//         .setPlaceholder('You are a helpful assistant.')
-	//         .setValue(plugin.settings.general.system_role !== undefined ? plugin.settings.general.system_role : DEFAULT_SETTINGS.general.system_role)
+	//         .setValue(plugin.settings!.general.system_role !== undefined ? plugin.settings!.general.system_role : DEFAULT_SETTINGS.general.system_role)
 	//         .onChange(async (value) => {
-	//             plugin.settings.general.system_role = value !== undefined ? value : DEFAULT_SETTINGS.general.system_role;
+	//             plugin.settings!.general.system_role = value !== undefined ? value : DEFAULT_SETTINGS.general.system_role;
 	//         })
 	//         .inputEl.addEventListener('focusout', async () => {
-	//             plugin.app.vault.modify(currentProfile, plugin.settings.general.system_role);
+	//             plugin.app.vault.modify(currentProfile, plugin.settings!.general.system_role);
 	//             await plugin.saveSettings();
 	//             SettingTab.display();
 	//         })
@@ -84,9 +84,9 @@ export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGP
 		.addText(text =>
 			text
 				.setPlaceholder('4096')
-				.setValue(plugin.settings.general.max_tokens)
+				.setValue(plugin.settings!.general.max_tokens)
 				.onChange(async value => {
-					plugin.settings.general.max_tokens = value;
+					plugin.settings!.general.max_tokens = value;
 					await plugin.saveSettings();
 				})
 		);
@@ -99,7 +99,7 @@ export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGP
 		.addText(text =>
 			text
 				.setPlaceholder('1.00')
-				.setValue(plugin.settings.general.temperature)
+				.setValue(plugin.settings!.general.temperature)
 				.onChange(async value => {
 					const floatValue = parseFloat(value); // 10 is the radix parameter to ensure parsing is done in base 10
 
@@ -107,18 +107,18 @@ export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGP
 					if (!isNaN(floatValue)) {
 						if (!isNaN(floatValue)) {
 							if (floatValue < 0) {
-								plugin.settings.general.temperature = '0.00';
+								plugin.settings!.general.temperature = '0.00';
 							} else if (floatValue > 2) {
-								plugin.settings.general.temperature = '2.00';
+								plugin.settings!.general.temperature = '2.00';
 							} else {
-								plugin.settings.general.temperature = floatValue.toFixed(2);
+								plugin.settings!.general.temperature = floatValue.toFixed(2);
 							}
 						} else {
-							plugin.settings.general.temperature = DEFAULT_SETTINGS.general.temperature;
+							plugin.settings!.general.temperature = DEFAULT_SETTINGS.general.temperature;
 						}
 					} else {
 						// Fallback to the default value if input is not a valid number
-						plugin.settings.general.temperature = DEFAULT_SETTINGS.general.temperature;
+						plugin.settings!.general.temperature = DEFAULT_SETTINGS.general.temperature;
 					}
 					await plugin.saveSettings();
 				})
@@ -131,8 +131,8 @@ export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGP
 		.setName('Allow Reference Current Note')
 		.setDesc('Allow chatbot to reference current active note during conversation.')
 		.addToggle(toggle =>
-			toggle.setValue(plugin.settings.general.allowReferenceCurrentNote).onChange(value => {
-				plugin.settings.general.allowReferenceCurrentNote = value;
+			toggle.setValue(plugin.settings!.general.allowReferenceCurrentNote).onChange(value => {
+				plugin.settings!.general.allowReferenceCurrentNote = value;
 				plugin.saveSettings();
 
 				const referenceCurrentNoteElement = document.getElementById('referenceCurrentNote');
@@ -163,9 +163,9 @@ export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGP
 	}
 }
 
-async function populateDropdownWithModels(plugin: MAXGPT, dropdown: DropdownComponent) {
+async function populateDropdownWithModels(plugin: MAXPlugin, dropdown: DropdownComponent) {
 	// Initialize an empty array to store all unique models
-	plugin.settings.allModels = [];
+	plugin.settings!.allModels = [];
 
 	// Helper function to fetch models based on the source type
 	async function fetchModels(sourceType: string) {
@@ -193,35 +193,35 @@ async function populateDropdownWithModels(plugin: MAXGPT, dropdown: DropdownComp
 	function addModelsToDropdownAndList(models: string[]) {
 		models.forEach(model => {
 			dropdown.addOption(model, model);
-			if (!plugin.settings.allModels.includes(model)) {
-				plugin.settings.allModels.push(model);
+			if (!plugin.settings!.allModels.includes(model)) {
+				plugin.settings!.allModels.push(model);
 			}
 		});
 	}
 
 	// Define model sources and conditions for fetching
 	const modelSources = [
-		{type: 'ollama', condition: plugin.settings.OllamaConnection.RESTAPIURL},
+		{type: 'ollama', condition: plugin.settings!.OllamaConnection.RESTAPIURL},
 		{
 			type: 'RESTAPIURL',
-			condition: plugin.settings.RESTAPIURLConnection.RESTAPIURL,
+			condition: plugin.settings!.RESTAPIURLConnection.RESTAPIURL,
 		},
 		{
 			type: 'anthropic',
-			condition: plugin.settings.APIConnections.anthropic.APIKey,
+			condition: plugin.settings!.APIConnections.anthropic.APIKey,
 		},
 		{
 			type: 'googleGemini',
-			condition: plugin.settings.APIConnections.googleGemini.APIKey,
+			condition: plugin.settings!.APIConnections.googleGemini.APIKey,
 		},
 		{
 			type: 'mistral',
-			condition: plugin.settings.APIConnections.mistral.APIKey,
+			condition: plugin.settings!.APIConnections.mistral.APIKey,
 		},
-		{type: 'openAI', condition: plugin.settings.APIConnections.openAI.APIKey},
+		{type: 'openAI', condition: plugin.settings!.APIConnections.openAI.APIKey},
 		{
 			type: 'openRouter',
-			condition: plugin.settings.APIConnections.openRouter.APIKey,
+			condition: plugin.settings!.APIConnections.openRouter.APIKey,
 		},
 	];
 

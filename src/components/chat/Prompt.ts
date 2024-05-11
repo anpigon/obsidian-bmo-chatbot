@@ -1,6 +1,7 @@
-import MAXGPT, {MAXSettings} from 'src/main';
+import MAXPlugin from '@/main';
+import {MAXSettings} from '@/types';
 
-export async function getPrompt(plugin: MAXGPT, settings: MAXSettings) {
+export async function getPrompt(plugin: MAXPlugin, settings: MAXSettings) {
 	if (settings.prompts.prompt.trim() === '') {
 		return '';
 	}

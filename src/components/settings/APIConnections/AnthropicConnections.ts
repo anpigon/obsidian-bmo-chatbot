@@ -1,13 +1,13 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import MAXGPT from 'src/main';
+import MAXPlugin from '@/main';
 
-export function addAnthropicConnectionSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export function addAnthropicConnectionSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'Anthropic'});
 
-	const initialState = plugin.settings.toggleAnthropicSettings;
+	const initialState = plugin.settings!.toggleAnthropicSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -23,11 +23,11 @@ export function addAnthropicConnectionSettings(containerEl: HTMLElement, plugin:
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleAnthropicSettings = false;
+			plugin.settings!.toggleAnthropicSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleAnthropicSettings = true;
+			plugin.settings!.toggleAnthropicSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -39,12 +39,12 @@ export function addAnthropicConnectionSettings(containerEl: HTMLElement, plugin:
 			text
 				.setPlaceholder('insert-api-key')
 				.setValue(
-					plugin.settings.APIConnections.anthropic.APIKey
-						? `${plugin.settings.APIConnections.anthropic.APIKey.slice(0, 6)}-...${plugin.settings.APIConnections.anthropic.APIKey.slice(-4)}`
+					plugin.settings!.APIConnections.anthropic.APIKey
+						? `${plugin.settings!.APIConnections.anthropic.APIKey.slice(0, 6)}-...${plugin.settings!.APIConnections.anthropic.APIKey.slice(-4)}`
 						: ''
 				)
 				.onChange(async value => {
-					plugin.settings.APIConnections.anthropic.APIKey = value;
+					plugin.settings!.APIConnections.anthropic.APIKey = value;
 					await plugin.saveSettings();
 				})
 				.inputEl.addEventListener('focusout', async () => {

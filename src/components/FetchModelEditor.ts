@@ -1,5 +1,5 @@
+import {MAXSettings} from '@/types';
 import {requestUrl} from 'obsidian';
-import {MAXSettings} from 'src/main';
 import OpenAI from 'openai';
 
 // Request response from Ollama

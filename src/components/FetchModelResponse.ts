@@ -1,6 +1,6 @@
 import {MarkdownRenderer, Notice, requestUrl, setIcon} from 'obsidian';
 import {ChatOllama} from '@langchain/community/chat_models/ollama';
-import MAXGPT, {MAXSettings} from '../main';
+import MAXPlugin from '@/main';
 import {messageHistory} from '../view';
 import {ChatCompletionMessageParam} from 'openai/resources/chat';
 import {addMessage, addParagraphBreaks} from './chat/Message';
@@ -10,12 +10,13 @@ import OpenAI from 'openai';
 import {getPrompt} from './chat/Prompt';
 import {BaseLanguageModelInput} from '@langchain/core/language_models/base';
 import {BaseMessageLike} from '@langchain/core/messages';
+import {MAXSettings} from '@/types';
 
 let abortController = new AbortController();
 
 // Fetch response from Ollama
 // NOTE: Abort does not work for requestUrl
-export async function fetchXionicResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchXionicResponse(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const openai = new OpenAI({
 		apiKey: settings.APIConnections.openAI.APIKey,
 		baseURL: settings.APIConnections.openAI.openAIBaseUrl,
@@ -98,7 +99,7 @@ export async function fetchXionicResponse(plugin: MAXGPT, settings: MAXSettings,
 	}
 }
 
-export async function fetchOllamaResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchOllamaResponse(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const ollamaRESTAPIURL = settings.OllamaConnection.RESTAPIURL;
 	if (!ollamaRESTAPIURL) {
 		return;
@@ -174,7 +175,7 @@ export async function fetchOllamaResponse(plugin: MAXGPT, settings: MAXSettings,
 }
 
 // Fetch response from Ollama (stream)
-export async function fetchOllamaResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchOllamaResponseStream(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const ollamaRESTAPIURL = settings.OllamaConnection.RESTAPIURL;
 
 	if (!ollamaRESTAPIURL) {
@@ -329,7 +330,7 @@ export async function fetchOllamaResponseStream(plugin: MAXGPT, settings: MAXSet
 }
 
 // Fetch response from openai-based rest api url
-export async function fetchRESTAPIURLResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchRESTAPIURLResponse(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
 	const messageHistoryAtIndex = removeConsecutiveUserRoles(filteredMessageHistory);
@@ -411,7 +412,7 @@ export async function fetchRESTAPIURLResponse(plugin: MAXGPT, settings: MAXSetti
 }
 
 // Fetch response from openai-based rest api url (stream)
-export async function fetchRESTAPIURLResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchRESTAPIURLResponseStream(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const RESTAPIURL = settings.RESTAPIURLConnection.RESTAPIURL;
 
 	if (!RESTAPIURL) {
@@ -577,7 +578,7 @@ export async function fetchRESTAPIURLResponseStream(plugin: MAXGPT, settings: MA
 }
 
 // Fetch response from Anthropic
-export async function fetchAnthropicResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchAnthropicResponse(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
@@ -656,7 +657,7 @@ export async function fetchAnthropicResponse(plugin: MAXGPT, settings: MAXSettin
 }
 
 // Fetch response from Google Gemini
-export async function fetchGoogleGeminiResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchGoogleGeminiResponse(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
 	const messageHistoryAtIndex = removeConsecutiveUserRoles(filteredMessageHistory);
@@ -705,7 +706,7 @@ export async function fetchGoogleGeminiResponse(plugin: MAXGPT, settings: MAXSet
 						role: 'user',
 						parts: [
 							{
-								text: `System prompt: \n\n ${plugin.settings.general.system_role} ${prompt} ${referenceCurrentNoteContent} Respond understood if you got it.`,
+								text: `System prompt: \n\n ${plugin.settings!.general.system_role} ${prompt} ${referenceCurrentNoteContent} Respond understood if you got it.`,
 							},
 						],
 					},
@@ -769,7 +770,7 @@ export async function fetchGoogleGeminiResponse(plugin: MAXGPT, settings: MAXSet
 }
 
 // Fetch response from Mistral
-export async function fetchMistralResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchMistralResponse(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
 	const messageHistoryAtIndex = removeConsecutiveUserRoles(filteredMessageHistory);
@@ -850,7 +851,7 @@ export async function fetchMistralResponse(plugin: MAXGPT, settings: MAXSettings
 }
 
 // Fetch response Mistral (stream)
-export async function fetchMistralResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchMistralResponseStream(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	abortController = new AbortController();
 	const prompt = await getPrompt(plugin, settings);
 
@@ -1007,7 +1008,7 @@ export async function fetchMistralResponseStream(plugin: MAXGPT, settings: MAXSe
 }
 
 // Fetch OpenAI-Based API
-export async function fetchOpenAIAPIResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchOpenAIAPIResponse(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const openai = new OpenAI({
 		apiKey: settings.APIConnections.openAI.APIKey,
 		baseURL: settings.APIConnections.openAI.openAIBaseUrl,
@@ -1088,7 +1089,7 @@ export async function fetchOpenAIAPIResponse(plugin: MAXGPT, settings: MAXSettin
 }
 
 // Fetch OpenAI-Based API Stream
-export async function fetchOpenAIAPIResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchOpenAIAPIResponseStream(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const openai = new OpenAI({
 		apiKey: settings.APIConnections.openAI.APIKey,
 		baseURL: settings.APIConnections.openAI.openAIBaseUrl,
@@ -1206,7 +1207,7 @@ export async function fetchOpenAIAPIResponseStream(plugin: MAXGPT, settings: MAX
 }
 
 // Fetch response from OpenRouter
-export async function fetchOpenRouterResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchOpenRouterResponse(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
 	const messageHistoryAtIndex = removeConsecutiveUserRoles(filteredMessageHistory);
@@ -1288,7 +1289,7 @@ export async function fetchOpenRouterResponse(plugin: MAXGPT, settings: MAXSetti
 }
 
 // Fetch response from openai-based rest api url (stream)
-export async function fetchOpenRouterResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
+export async function fetchOpenRouterResponseStream(plugin: MAXPlugin, settings: MAXSettings, index: number) {
 	const url = 'https://openrouter.ai/api/v1/chat/completions';
 
 	abortController = new AbortController();

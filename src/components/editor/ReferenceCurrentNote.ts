@@ -1,9 +1,10 @@
-import MAXGPT, {MAXSettings} from 'src/main';
+import MAXPlugin from '@/main';
+import {MAXSettings} from '@/types';
 
 let referenceCurrentNoteContent = '';
 
 // Reference Current Note Indicator
-export async function getActiveFileContent(plugin: MAXGPT, settings: MAXSettings) {
+export async function getActiveFileContent(plugin: MAXPlugin, settings: MAXSettings) {
 	const dotElement = document.querySelector('.dotIndicator');
 	referenceCurrentNoteContent = '';
 	if (settings.general.allowReferenceCurrentNote === true) {

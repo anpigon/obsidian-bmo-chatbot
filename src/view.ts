@@ -1,6 +1,5 @@
 import {ItemView, WorkspaceLeaf, TFile, MarkdownView, Editor, EditorPosition} from 'obsidian';
-import {DEFAULT_SETTINGS, MAXSettings} from './main';
-import MAXGPT from './main';
+import MAXPlugin from './main';
 import {executeCommand} from './components/chat/Commands';
 import {getActiveFileContent} from './components/editor/ReferenceCurrentNote';
 import {addMessage} from './components/chat/Message';
@@ -21,15 +20,16 @@ import {
 	fetchOpenRouterResponse,
 	fetchXionicResponse,
 } from './components/FetchModelResponse';
-import {DEFAULT_MODEL} from './constants';
+import {DEFAULT_MODEL, DEFAULT_SETTINGS} from './constants';
+import {MAXSettings} from './types';
 
-export const VIEW_TYPE_CHATBOT = 'chatbot-view';
+export const VIEW_TYPE_CHATBOT = 'max-chatbot-view';
 export const ANTHROPIC_MODELS = ['claude-instant-1.2', 'claude-2.0', 'claude-2.1', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229'];
 export const OPENAI_MODELS = ['gpt-3.5-turbo', 'gpt-3.5-turbo-1106', 'gpt-4', 'gpt-4-turbo-preview'];
 
-export function filenameMessageHistoryJSON(plugin: MAXGPT) {
+export function filenameMessageHistoryJSON(plugin: MAXPlugin) {
 	const filenameMessageHistoryPath = './.obsidian/plugins/max-chatbot/data/';
-	const currentProfileMessageHistory = `messageHistory_${plugin.settings.profiles.profile.replace('.md', '.json')}`;
+	const currentProfileMessageHistory = `messageHistory_${plugin.settings!.profiles.profile.replace('.md', '.json')}`;
 
 	return filenameMessageHistoryPath + currentProfileMessageHistory;
 }
@@ -48,9 +48,9 @@ export class MAXView extends ItemView {
 	private settings: MAXSettings;
 	private textareaElement: HTMLTextAreaElement;
 	private preventEnter = false;
-	private plugin: MAXGPT;
+	private plugin: MAXPlugin;
 
-	constructor(leaf: WorkspaceLeaf, settings: MAXSettings, plugin: MAXGPT) {
+	constructor(leaf: WorkspaceLeaf, settings: MAXSettings, plugin: MAXPlugin) {
 		super(leaf);
 		this.settings = settings;
 		this.plugin = plugin;
@@ -360,7 +360,7 @@ export class MAXView extends ItemView {
 
 				const modelName = document.querySelector('#modelName');
 				if (modelName) {
-					modelName.textContent = `Model: ${this.plugin.settings.general.model}`;
+					modelName.textContent = `Model: ${this.plugin.settings!.general.model}`;
 				}
 			}
 		};
@@ -453,7 +453,7 @@ export class MAXView extends ItemView {
 }
 
 // Create data folder and load JSON file
-async function loadData(plugin: MAXGPT) {
+async function loadData(plugin: MAXPlugin) {
 	if (!(await plugin.app.vault.adapter.exists('./.obsidian/plugins/max-chatbot/data/'))) {
 		plugin.app.vault.adapter.mkdir('./.obsidian/plugins/max-chatbot/data/');
 	}
@@ -476,7 +476,7 @@ async function loadData(plugin: MAXGPT) {
 }
 
 // Delete all messages from the messageContainer and the messageHistory array
-export async function deleteAllMessages(plugin: MAXGPT) {
+export async function deleteAllMessages(plugin: MAXPlugin) {
 	const messageContainer = document.querySelector('#messageContainer');
 
 	// Remove all child nodes from the messageContainer

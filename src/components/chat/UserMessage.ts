@@ -1,8 +1,10 @@
-import MAXGPT, {MAXSettings, DEFAULT_SETTINGS} from 'src/main';
-import {colorToHex} from 'src/utils/ColorConverter';
+import MAXPlugin from '@/main';
+import {colorToHex} from '@/utils/ColorConverter';
 import {displayUserEditButton, displayTrashButton, displayUserCopyButton, regenerateUserButton} from './Buttons';
+import {DEFAULT_SETTINGS} from '@/constants';
+import {MAXSettings} from '@/types';
 
-export function displayUserMessage(plugin: MAXGPT, settings: MAXSettings, message: string) {
+export function displayUserMessage(plugin: MAXPlugin, settings: MAXSettings, message: string) {
 	const trimmedMessage = message.trim();
 
 	const userMessageDiv = document.createElement('div');

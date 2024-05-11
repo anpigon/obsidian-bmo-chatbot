@@ -1,10 +1,10 @@
 import {requestUrl} from 'obsidian';
 import OpenAI from 'openai';
-import MAXGPT from 'src/main';
-import {OPENAI_MODELS} from 'src/view';
+import MAXPlugin from '@/main';
+import {OPENAI_MODELS} from '@/view';
 
-export async function fetchOllamaModels(plugin: MAXGPT) {
-	const ollamaRESTAPIURL = plugin.settings.OllamaConnection.RESTAPIURL;
+export async function fetchOllamaModels(plugin: MAXPlugin) {
+	const ollamaRESTAPIURL = plugin.settings!.OllamaConnection.RESTAPIURL;
 
 	// URL Validation
 	try {
@@ -26,7 +26,7 @@ export async function fetchOllamaModels(plugin: MAXGPT) {
 		const jsonData = response.json;
 
 		const models = jsonData.models.map((model: {name: string}) => model.name);
-		plugin.settings.OllamaConnection.ollamaModels = models;
+		plugin.settings!.OllamaConnection.ollamaModels = models;
 
 		return models;
 	} catch (error) {
@@ -34,8 +34,8 @@ export async function fetchOllamaModels(plugin: MAXGPT) {
 	}
 }
 
-export async function fetchRESTAPIURLModels(plugin: MAXGPT) {
-	const RESTAPIURL = plugin.settings.RESTAPIURLConnection.RESTAPIURL;
+export async function fetchRESTAPIURLModels(plugin: MAXPlugin) {
+	const RESTAPIURL = plugin.settings!.RESTAPIURLConnection.RESTAPIURL;
 
 	// URL Validation
 	try {
@@ -51,7 +51,7 @@ export async function fetchRESTAPIURLModels(plugin: MAXGPT) {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${plugin.settings.RESTAPIURLConnection.APIKey}`,
+				Authorization: `Bearer ${plugin.settings!.RESTAPIURLConnection.APIKey}`,
 			},
 		});
 
@@ -64,7 +64,7 @@ export async function fetchRESTAPIURLModels(plugin: MAXGPT) {
 				models = response.json.data.map((model: {id: number}) => model.id);
 			}
 
-			plugin.settings.RESTAPIURLConnection.RESTAPIURLModels = models;
+			plugin.settings!.RESTAPIURLConnection.RESTAPIURLModels = models;
 			return models;
 		}
 	} catch (error) {
@@ -75,9 +75,9 @@ export async function fetchRESTAPIURLModels(plugin: MAXGPT) {
 
 // Anthropic API models are static. No need to fetch them.
 
-export async function fetchGoogleGeminiModels(plugin: MAXGPT) {
+export async function fetchGoogleGeminiModels(plugin: MAXPlugin) {
 	try {
-		const API_KEY = plugin.settings.APIConnections.googleGemini.APIKey;
+		const API_KEY = plugin.settings!.APIConnections.googleGemini.APIKey;
 
 		const response = await requestUrl({
 			url: `https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`,
@@ -92,7 +92,7 @@ export async function fetchGoogleGeminiModels(plugin: MAXGPT) {
 			const models = response.json.models.map((model: {name: string}) => model.name).filter((model: string) => model.endsWith('models/gemini-pro'));
 
 			// Store the models in your plugin's settings or handle them as needed
-			plugin.settings.APIConnections.googleGemini.geminiModels = models;
+			plugin.settings!.APIConnections.googleGemini.geminiModels = models;
 			return models;
 		}
 	} catch (error) {
@@ -100,21 +100,21 @@ export async function fetchGoogleGeminiModels(plugin: MAXGPT) {
 	}
 }
 
-export async function fetchMistralModels(plugin: MAXGPT) {
+export async function fetchMistralModels(plugin: MAXPlugin) {
 	try {
 		const response = await requestUrl({
 			url: 'https://api.mistral.ai/v1/models',
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${plugin.settings.APIConnections.mistral.APIKey}`,
+				Authorization: `Bearer ${plugin.settings!.APIConnections.mistral.APIKey}`,
 			},
 		});
 
 		// Check if the response is valid
 		if (response.json?.data) {
 			const models = response.json.data.map((model: {id: number}) => model.id);
-			plugin.settings.APIConnections.mistral.mistralModels = models;
+			plugin.settings!.APIConnections.mistral.mistralModels = models;
 			return models;
 		}
 	} catch (error) {
@@ -122,33 +122,33 @@ export async function fetchMistralModels(plugin: MAXGPT) {
 	}
 }
 
-export async function fetchOpenAIBaseModels(plugin: MAXGPT) {
+export async function fetchOpenAIBaseModels(plugin: MAXPlugin) {
 	const openai = new OpenAI({
-		apiKey: plugin.settings.APIConnections.openAI.APIKey,
-		baseURL: plugin.settings.APIConnections.openAI.openAIBaseUrl,
+		apiKey: plugin.settings!.APIConnections.openAI.APIKey,
+		baseURL: plugin.settings!.APIConnections.openAI.openAIBaseUrl,
 		dangerouslyAllowBrowser: true, // apiKey is stored within data.json
 	});
 
 	const list = await openai.models.list();
 
 	if (openai.baseURL === 'https://api.openai.com/v1') {
-		plugin.settings.APIConnections.openAI.openAIBaseModels = OPENAI_MODELS;
+		plugin.settings!.APIConnections.openAI.openAIBaseModels = OPENAI_MODELS;
 		return OPENAI_MODELS;
 	} else {
 		const models = list.data.map(model => model.id);
-		plugin.settings.APIConnections.openAI.openAIBaseModels = models;
+		plugin.settings!.APIConnections.openAI.openAIBaseModels = models;
 		return models;
 	}
 }
 
-export async function fetchOpenRouterModels(plugin: MAXGPT) {
+export async function fetchOpenRouterModels(plugin: MAXPlugin) {
 	try {
 		const response = await requestUrl({
 			url: 'https://openrouter.ai/api/v1/models',
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${plugin.settings.APIConnections.openRouter.APIKey}`,
+				Authorization: `Bearer ${plugin.settings!.APIConnections.openRouter.APIKey}`,
 			},
 		});
 
@@ -161,7 +161,7 @@ export async function fetchOpenRouterModels(plugin: MAXGPT) {
 				models = response.json.data.map((model: {id: number}) => model.id);
 			}
 
-			plugin.settings.APIConnections.openRouter.openRouterModels = models;
+			plugin.settings!.APIConnections.openRouter.openRouterModels = models;
 			return models;
 		}
 	} catch (error) {

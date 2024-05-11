@@ -1,13 +1,13 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import MAXGPT from 'src/main';
+import MAXPlugin from '@/main';
 
-export function addGoogleGeminiConnectionSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export function addGoogleGeminiConnectionSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'Google Gemini'});
 
-	const initialState = plugin.settings.toggleGoogleGeminiSettings;
+	const initialState = plugin.settings!.toggleGoogleGeminiSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -23,11 +23,11 @@ export function addGoogleGeminiConnectionSettings(containerEl: HTMLElement, plug
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleGoogleGeminiSettings = false;
+			plugin.settings!.toggleGoogleGeminiSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleGoogleGeminiSettings = true;
+			plugin.settings!.toggleGoogleGeminiSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -39,12 +39,12 @@ export function addGoogleGeminiConnectionSettings(containerEl: HTMLElement, plug
 			text
 				.setPlaceholder('insert-api-key')
 				.setValue(
-					plugin.settings.APIConnections.googleGemini.APIKey
-						? `${plugin.settings.APIConnections.googleGemini.APIKey.slice(0, 6)}-...${plugin.settings.APIConnections.googleGemini.APIKey.slice(-4)}`
+					plugin.settings!.APIConnections.googleGemini.APIKey
+						? `${plugin.settings!.APIConnections.googleGemini.APIKey.slice(0, 6)}-...${plugin.settings!.APIConnections.googleGemini.APIKey.slice(-4)}`
 						: ''
 				)
 				.onChange(async value => {
-					plugin.settings.APIConnections.googleGemini.APIKey = value;
+					plugin.settings!.APIConnections.googleGemini.APIKey = value;
 					await plugin.saveSettings();
 				})
 				.inputEl.addEventListener('focusout', async () => {

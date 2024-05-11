@@ -1,15 +1,16 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
-import {addDescriptionLink} from 'src/utils/DescriptionLink';
+import MAXPlugin from '@/main';
+import {addDescriptionLink} from '@/utils/DescriptionLink';
+import {DEFAULT_SETTINGS} from '@/constants';
 
 // OpenAI-Based REST API URL Connection Settings
-export function addRESTAPIURLSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export function addRESTAPIURLSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'REST API URL Connection'});
 
-	const initialState = plugin.settings.toggleRESTAPIURLSettings;
+	const initialState = plugin.settings!.toggleRESTAPIURLSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -25,11 +26,11 @@ export function addRESTAPIURLSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleRESTAPIURLSettings = false;
+			plugin.settings!.toggleRESTAPIURLSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleRESTAPIURLSettings = true;
+			plugin.settings!.toggleRESTAPIURLSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -41,13 +42,13 @@ export function addRESTAPIURLSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 			text
 				.setPlaceholder('insert-api-key')
 				.setValue(
-					plugin.settings.RESTAPIURLConnection.APIKey
-						? `${plugin.settings.RESTAPIURLConnection.APIKey.slice(0, 6)}-...${plugin.settings.RESTAPIURLConnection.APIKey.slice(-4)}`
+					plugin.settings!.RESTAPIURLConnection.APIKey
+						? `${plugin.settings!.RESTAPIURLConnection.APIKey.slice(0, 6)}-...${plugin.settings!.RESTAPIURLConnection.APIKey.slice(-4)}`
 						: ''
 				)
 				.onChange(async value => {
-					plugin.settings.RESTAPIURLConnection.RESTAPIURLModels = [];
-					plugin.settings.RESTAPIURLConnection.APIKey = value;
+					plugin.settings!.RESTAPIURLConnection.RESTAPIURLModels = [];
+					plugin.settings!.RESTAPIURLConnection.APIKey = value;
 					await plugin.saveSettings();
 				})
 				.inputEl.addEventListener('focusout', async () => {
@@ -61,10 +62,10 @@ export function addRESTAPIURLSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addText(text =>
 			text
 				.setPlaceholder('http://localhost:1234')
-				.setValue(plugin.settings.RESTAPIURLConnection.RESTAPIURL || DEFAULT_SETTINGS.RESTAPIURLConnection.RESTAPIURL)
+				.setValue(plugin.settings!.RESTAPIURLConnection.RESTAPIURL || DEFAULT_SETTINGS.RESTAPIURLConnection.RESTAPIURL)
 				.onChange(async value => {
-					plugin.settings.RESTAPIURLConnection.RESTAPIURLModels = [];
-					plugin.settings.RESTAPIURLConnection.RESTAPIURL = value ? value : DEFAULT_SETTINGS.RESTAPIURLConnection.RESTAPIURL;
+					plugin.settings!.RESTAPIURLConnection.RESTAPIURLModels = [];
+					plugin.settings!.RESTAPIURLConnection.RESTAPIURL = value ? value : DEFAULT_SETTINGS.RESTAPIURLConnection.RESTAPIURL;
 					await plugin.saveSettings();
 				})
 				.inputEl.addEventListener('focusout', async () => {
@@ -83,8 +84,8 @@ export function addRESTAPIURLSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 			)
 		)
 		.addToggle(toggle =>
-			toggle.setValue(plugin.settings.RESTAPIURLConnection.allowStream).onChange(value => {
-				plugin.settings.RESTAPIURLConnection.allowStream = value;
+			toggle.setValue(plugin.settings!.RESTAPIURLConnection.allowStream).onChange(value => {
+				plugin.settings!.RESTAPIURLConnection.allowStream = value;
 				plugin.saveSettings();
 			})
 		);

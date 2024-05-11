@@ -1,7 +1,7 @@
 import {Notice, requestUrl} from 'obsidian';
 import OpenAI from 'openai';
-import {MAXSettings} from 'src/main';
-import {ANTHROPIC_MODELS, OPENAI_MODELS} from 'src/view';
+import {MAXSettings} from '@/types';
+import {ANTHROPIC_MODELS, OPENAI_MODELS} from '@/view';
 
 // Rename note title based on specified model
 export async function fetchModelRenameTitle(settings: MAXSettings, referenceCurrentNoteContent: string) {

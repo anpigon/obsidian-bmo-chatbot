@@ -1,5 +1,5 @@
 import {App, PluginSettingTab, TFile} from 'obsidian';
-import MAXGPT, {DEFAULT_SETTINGS, updateSettingsFromFrontMatter} from './main';
+import MAXPlugin, {updateSettingsFromFrontMatter} from './main';
 import {addGeneralSettings} from './components/settings/GeneralSettings';
 import {addAppearanceSettings} from './components/settings/AppearanceSettings';
 import {addChatHistorySettings} from './components/settings/ChatHistorySettings';
@@ -9,11 +9,12 @@ import {addProfileSettings} from './components/settings/ProfileSettings';
 import {addRESTAPIURLSettings} from './components/settings/RESTAPIURLSettings';
 import {addEditorSettings} from './components/settings/EditorSettings';
 import {addPromptSettings} from './components/settings/PromptSettings';
+import {DEFAULT_SETTINGS} from './constants';
 
 export class MAXSettingTab extends PluginSettingTab {
-	plugin: MAXGPT;
+	plugin: MAXPlugin;
 
-	constructor(app: App, plugin: MAXGPT) {
+	constructor(app: App, plugin: MAXPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -64,7 +65,7 @@ export class MAXSettingTab extends PluginSettingTab {
 			event.preventDefault();
 			const confirmReset = confirm('Are you sure you want to reset all settings to default?');
 			if (confirmReset) {
-				const profilePathFile = `${this.plugin.settings.profiles.profileFolderPath}/${this.plugin.settings.profiles.profile}`;
+				const profilePathFile = `${this.plugin.settings!.profiles.profileFolderPath}/${this.plugin.settings!.profiles.profile}`;
 				const profilePath = this.plugin.app.vault.getAbstractFileByPath(profilePathFile) as TFile;
 
 				const defaultProfilePathFile = `${DEFAULT_SETTINGS.profiles.profileFolderPath}/${DEFAULT_SETTINGS.profiles.profile}`;
@@ -83,7 +84,7 @@ export class MAXSettingTab extends PluginSettingTab {
 						const filenameMessageHistory = `./.obsidian/plugins/max-chatbot/data/messageHistory_${defaultProfilePath.name.replace('.md', '.json')}`;
 						this.app.vault.adapter.remove(filenameMessageHistory);
 						this.plugin.app.vault.delete(profilePath);
-						this.plugin.settings.profiles.profile = DEFAULT_SETTINGS.profiles.profile;
+						this.plugin.settings!.profiles.profile = DEFAULT_SETTINGS.profiles.profile;
 						await updateSettingsFromFrontMatter(this.plugin, defaultProfilePath);
 						await this.plugin.saveSettings();
 					}

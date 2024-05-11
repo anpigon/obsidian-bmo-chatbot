@@ -1,10 +1,12 @@
-import MAXGPT, {MAXSettings, DEFAULT_SETTINGS} from 'src/main';
-import {colorToHex} from 'src/utils/ColorConverter';
+import MAXPlugin from '@/main';
+import {colorToHex} from '@/utils/ColorConverter';
 import {displayAppendButton, displayBotCopyButton, displayBotEditButton} from './Buttons';
 import {addMessage, addParagraphBreaks} from './Message';
 import {MarkdownRenderer, setIcon} from 'obsidian';
+import {MAXSettings} from '@/types';
+import {DEFAULT_SETTINGS} from '@/constants';
 
-export function displayBotMessage(plugin: MAXGPT, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
+export function displayBotMessage(plugin: MAXPlugin, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
 	const botMessageDiv = document.createElement('div');
 	botMessageDiv.className = 'botMessage';
 
@@ -94,7 +96,7 @@ export function displayLoadingBotMessage(settings: MAXSettings) {
 	return botMessageDiv;
 }
 
-export function displayCommandBotMessage(plugin: MAXGPT, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
+export function displayCommandBotMessage(plugin: MAXPlugin, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
 	const botMessageDiv = document.createElement('div');
 	botMessageDiv.className = 'botMessage';
 	botMessageDiv.style.backgroundColor = colorToHex(
@@ -128,7 +130,7 @@ export function displayCommandBotMessage(plugin: MAXGPT, settings: MAXSettings, 
 	return botMessageDiv;
 }
 
-export function displayErrorBotMessage(plugin: MAXGPT, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
+export function displayErrorBotMessage(plugin: MAXPlugin, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
 	const botMessageDiv = document.createElement('div');
 	botMessageDiv.className = 'botMessage';
 	botMessageDiv.style.backgroundColor = colorToHex(
@@ -162,7 +164,7 @@ export function displayErrorBotMessage(plugin: MAXGPT, settings: MAXSettings, me
 
 	const index = messageHistory.length - 1;
 
-	addMessage(plugin, messageBlockDiv.innerHTML, 'botMessage', this.settings, index);
+	addMessage(plugin, messageBlockDiv.innerHTML, 'botMessage', this.settings!, index);
 
 	return botMessageDiv;
 }

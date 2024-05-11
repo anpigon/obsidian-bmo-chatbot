@@ -1,13 +1,14 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
+import {DEFAULT_SETTINGS} from '@/constants';
+import MAXPlugin from '@/main';
 
-export function addOpenAIConnectionSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export function addOpenAIConnectionSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'OpenAI'});
 
-	const initialState = plugin.settings.toggleOpenAISettings;
+	const initialState = plugin.settings!.toggleOpenAISettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -23,11 +24,11 @@ export function addOpenAIConnectionSettings(containerEl: HTMLElement, plugin: MA
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleOpenAISettings = false;
+			plugin.settings!.toggleOpenAISettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleOpenAISettings = true;
+			plugin.settings!.toggleOpenAISettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -39,12 +40,12 @@ export function addOpenAIConnectionSettings(containerEl: HTMLElement, plugin: MA
 			text
 				.setPlaceholder('insert-api-key')
 				.setValue(
-					plugin.settings.APIConnections.openAI.APIKey
-						? `${plugin.settings.APIConnections.openAI.APIKey.slice(0, 6)}-...${plugin.settings.APIConnections.openAI.APIKey.slice(-4)}`
+					plugin.settings!.APIConnections.openAI.APIKey
+						? `${plugin.settings!.APIConnections.openAI.APIKey.slice(0, 6)}-...${plugin.settings!.APIConnections.openAI.APIKey.slice(-4)}`
 						: ''
 				)
 				.onChange(async value => {
-					plugin.settings.APIConnections.openAI.APIKey = value;
+					plugin.settings!.APIConnections.openAI.APIKey = value;
 					await plugin.saveSettings();
 				})
 				.inputEl.addEventListener('focusout', async () => {
@@ -61,8 +62,8 @@ export function addOpenAIConnectionSettings(containerEl: HTMLElement, plugin: MA
 				.setIcon('rotate-cw')
 				.setClass('clickable-icon')
 				.onClick(async () => {
-					plugin.settings.APIConnections.openAI.openAIBaseModels = [];
-					plugin.settings.APIConnections.openAI.openAIBaseUrl = DEFAULT_SETTINGS.APIConnections.openAI.openAIBaseUrl;
+					plugin.settings!.APIConnections.openAI.openAIBaseModels = [];
+					plugin.settings!.APIConnections.openAI.openAIBaseUrl = DEFAULT_SETTINGS.APIConnections.openAI.openAIBaseUrl;
 					await plugin.saveSettings();
 					SettingTab.display();
 				})
@@ -70,9 +71,9 @@ export function addOpenAIConnectionSettings(containerEl: HTMLElement, plugin: MA
 		.addText(text =>
 			text
 				.setPlaceholder('https://api.openai.com/v1')
-				.setValue(plugin.settings.APIConnections.openAI.openAIBaseUrl || DEFAULT_SETTINGS.APIConnections.openAI.openAIBaseUrl)
+				.setValue(plugin.settings!.APIConnections.openAI.openAIBaseUrl || DEFAULT_SETTINGS.APIConnections.openAI.openAIBaseUrl)
 				.onChange(async value => {
-					plugin.settings.APIConnections.openAI.openAIBaseUrl = value ? value : DEFAULT_SETTINGS.APIConnections.openAI.openAIBaseUrl;
+					plugin.settings!.APIConnections.openAI.openAIBaseUrl = value ? value : DEFAULT_SETTINGS.APIConnections.openAI.openAIBaseUrl;
 					await plugin.saveSettings();
 				})
 				.inputEl.addEventListener('focusout', async () => {
@@ -84,8 +85,8 @@ export function addOpenAIConnectionSettings(containerEl: HTMLElement, plugin: MA
 		.setName('Allow Stream')
 		.setDesc('Allow stream for OpenAI-Based models.')
 		.addToggle(toggle =>
-			toggle.setValue(plugin.settings.APIConnections.openAI.allowStream).onChange(async value => {
-				plugin.settings.APIConnections.openAI.allowStream = value;
+			toggle.setValue(plugin.settings!.APIConnections.openAI.allowStream).onChange(async value => {
+				plugin.settings!.APIConnections.openAI.allowStream = value;
 				await plugin.saveSettings();
 			})
 		);

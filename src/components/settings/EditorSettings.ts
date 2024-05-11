@@ -1,14 +1,15 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
-import {addDescriptionLink} from 'src/utils/DescriptionLink';
+import MAXPlugin from '@/main';
+import {addDescriptionLink} from '@/utils/DescriptionLink';
+import {DEFAULT_SETTINGS} from '@/constants';
 
-export async function addEditorSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export async function addEditorSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'Editor'});
 
-	const initialState = plugin.settings.toggleEditorSettings;
+	const initialState = plugin.settings!.toggleEditorSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -24,11 +25,11 @@ export async function addEditorSettings(containerEl: HTMLElement, plugin: MAXGPT
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleEditorSettings = false;
+			plugin.settings!.toggleEditorSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleEditorSettings = true;
+			plugin.settings!.toggleEditorSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -47,12 +48,12 @@ export async function addEditorSettings(containerEl: HTMLElement, plugin: MAXGPT
 			text
 				.setPlaceholder('You are a helpful assistant.')
 				.setValue(
-					plugin.settings.editor.prompt_select_generate_system_role !== undefined
-						? plugin.settings.editor.prompt_select_generate_system_role
+					plugin.settings!.editor.prompt_select_generate_system_role !== undefined
+						? plugin.settings!.editor.prompt_select_generate_system_role
 						: DEFAULT_SETTINGS.editor.prompt_select_generate_system_role
 				)
 				.onChange(async value => {
-					plugin.settings.editor.prompt_select_generate_system_role =
+					plugin.settings!.editor.prompt_select_generate_system_role =
 						value !== undefined ? value : DEFAULT_SETTINGS.editor.prompt_select_generate_system_role;
 					await plugin.saveSettings();
 				})

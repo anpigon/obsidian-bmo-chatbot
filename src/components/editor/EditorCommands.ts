@@ -1,7 +1,7 @@
-import MAXGPT, {MAXSettings, DEFAULT_SETTINGS} from 'src/main';
+import MAXPlugin from '@/main';
 import {fetchModelRenameTitle} from './FetchRenameNoteTitle';
 import {MarkdownView, Notice} from 'obsidian';
-import {ANTHROPIC_MODELS, OPENAI_MODELS} from 'src/view';
+import {ANTHROPIC_MODELS, OPENAI_MODELS} from '@/view';
 import {
 	fetchOpenAIBaseAPIResponseEditor,
 	fetchOllamaResponseEditor,
@@ -11,8 +11,10 @@ import {
 	fetchGoogleGeminiDataEditor,
 	fetchOpenRouterEditor,
 } from '../FetchModelEditor';
+import {DEFAULT_SETTINGS} from '@/constants';
+import {MAXSettings} from '@/types';
 
-export async function renameTitleCommand(plugin: MAXGPT, settings: MAXSettings) {
+export async function renameTitleCommand(plugin: MAXPlugin, settings: MAXSettings) {
 	let uniqueNameFound = false;
 	let modelRenameTitle;
 	let folderName = plugin.app.vault.getAbstractFileByPath(plugin.app.workspace.getActiveFile()?.path || '')?.parent?.path || '';
@@ -58,7 +60,7 @@ export async function renameTitleCommand(plugin: MAXGPT, settings: MAXSettings) 
 }
 
 // Prompt + Select + Generate command
-export async function promptSelectGenerateCommand(plugin: MAXGPT, settings: MAXSettings) {
+export async function promptSelectGenerateCommand(plugin: MAXPlugin, settings: MAXSettings) {
 	const view = plugin.app.workspace.getActiveViewOfType(MarkdownView);
 	const select = view?.editor.getSelection();
 	if (view && select && select.trim() !== '') {

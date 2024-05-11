@@ -1,14 +1,15 @@
 import {ColorComponent, Setting, SettingTab, setIcon} from 'obsidian';
-import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
-import {colorToHex} from 'src/utils/ColorConverter';
+import MAXPlugin from '@/main';
+import {colorToHex} from '@/utils/ColorConverter';
+import {DEFAULT_SETTINGS} from '@/constants';
 
-export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'Appearance'});
 
-	const initialState = plugin.settings.toggleAppearanceSettings;
+	const initialState = plugin.settings!.toggleAppearanceSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -24,11 +25,11 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleAppearanceSettings = false;
+			plugin.settings!.toggleAppearanceSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleAppearanceSettings = true;
+			plugin.settings!.toggleAppearanceSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -37,8 +38,8 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.setName('Allow Header')
 		.setDesc('Display chatbot name and model name in header.')
 		.addToggle(toggle =>
-			toggle.setValue(plugin.settings.appearance.allowHeader).onChange(value => {
-				plugin.settings.appearance.allowHeader = value;
+			toggle.setValue(plugin.settings!.appearance.allowHeader).onChange(value => {
+				plugin.settings!.appearance.allowHeader = value;
 				const referenceCurrentNoteElement = document.querySelector('#referenceCurrentNote') as HTMLElement;
 
 				if (value === true) {
@@ -67,14 +68,14 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addText(text =>
 			text
 				.setPlaceholder('Enter user name')
-				.setValue(plugin.settings.appearance.userName || DEFAULT_SETTINGS.appearance.userName)
+				.setValue(plugin.settings!.appearance.userName || DEFAULT_SETTINGS.appearance.userName)
 				.onChange(async value => {
-					plugin.settings.appearance.userName = value ? value : DEFAULT_SETTINGS.appearance.userName;
+					plugin.settings!.appearance.userName = value ? value : DEFAULT_SETTINGS.appearance.userName;
 					text.inputEl.maxLength = 30;
 					await plugin.saveSettings();
 					const userNames = document.querySelectorAll('.userName') as NodeListOf<HTMLHeadingElement>;
 					userNames.forEach(userName => {
-						userName.textContent = plugin.settings.appearance.userName;
+						userName.textContent = plugin.settings!.appearance.userName;
 					});
 				})
 		);
@@ -84,18 +85,18 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 	//     .setDesc('Name your chatbot.')
 	//     .addText(text => text
 	//         .setPlaceholder('Enter chatbot name')
-	//         .setValue(plugin.settings.appearance.chatbotName || DEFAULT_SETTINGS.appearance.chatbotName)
+	//         .setValue(plugin.settings!.appearance.chatbotName || DEFAULT_SETTINGS.appearance.chatbotName)
 	//         .onChange(async (value) => {
-	//             plugin.settings.appearance.chatbotName = value ? value.toUpperCase() : DEFAULT_SETTINGS.appearance.chatbotName;
+	//             plugin.settings!.appearance.chatbotName = value ? value.toUpperCase() : DEFAULT_SETTINGS.appearance.chatbotName;
 	//             text.inputEl.maxLength = 30;
 	//             await plugin.saveSettings();
 	//             const chatbotNameHeading = document.querySelector('#chatbotNameHeading') as HTMLHeadingElement;
 	//             const chatbotNames = document.querySelectorAll('.chatbotName') as NodeListOf<HTMLHeadingElement>;
 	//             if (chatbotNameHeading) {
-	//                 chatbotNameHeading.textContent = plugin.settings.appearance.chatbotName;
+	//                 chatbotNameHeading.textContent = plugin.settings!.appearance.chatbotName;
 	//             }
 	//             chatbotNames.forEach(chatbotName => {
-	//                 chatbotName.textContent = plugin.settings.appearance.chatbotName;
+	//                 chatbotName.textContent = plugin.settings!.appearance.chatbotName;
 	//             });
 	//         })
 	//     );
@@ -153,15 +154,15 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addColorPicker(color => {
 			colorPicker1 = color;
 
-			let defaultValue = plugin.settings.appearance.chatbotContainerBackgroundColor;
+			let defaultValue = plugin.settings!.appearance.chatbotContainerBackgroundColor;
 
-			if (plugin.settings.appearance.chatbotContainerBackgroundColor === '--background-secondary') {
+			if (plugin.settings!.appearance.chatbotContainerBackgroundColor === '--background-secondary') {
 				defaultValue = colorToHex(defaultChatbotContainerBackgroundColor);
 			}
 
 			color.setValue(defaultValue).onChange(async value => {
 				const hexValue = colorToHex(value);
-				plugin.settings.appearance.chatbotContainerBackgroundColor = hexValue;
+				plugin.settings!.appearance.chatbotContainerBackgroundColor = hexValue;
 				const chatbotContainer = document.querySelector('.chatbotContainer') as HTMLElement;
 				const messageContainer = document.querySelector('#messageContainer') as HTMLElement;
 				if (chatbotContainer) {
@@ -195,15 +196,15 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addColorPicker(color => {
 			colorPicker2 = color;
 
-			let defaultValue = plugin.settings.appearance.messageContainerBackgroundColor;
+			let defaultValue = plugin.settings!.appearance.messageContainerBackgroundColor;
 
-			if (plugin.settings.appearance.messageContainerBackgroundColor === '--background-secondary') {
+			if (plugin.settings!.appearance.messageContainerBackgroundColor === '--background-secondary') {
 				defaultValue = colorToHex(defaultMessageContainerBackgroundColor);
 			}
 
 			color.setValue(defaultValue).onChange(async value => {
 				const hexValue = colorToHex(value);
-				plugin.settings.appearance.messageContainerBackgroundColor = hexValue;
+				plugin.settings!.appearance.messageContainerBackgroundColor = hexValue;
 				const messageContainer = document.querySelector('#messageContainer') as HTMLElement;
 				if (messageContainer) {
 					messageContainer.style.backgroundColor = hexValue;
@@ -238,15 +239,15 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addColorPicker(color => {
 			colorPicker3 = color;
 
-			let defaultValue = plugin.settings.appearance.userMessageFontColor;
+			let defaultValue = plugin.settings!.appearance.userMessageFontColor;
 
-			if (plugin.settings.appearance.userMessageFontColor === '--text-normal') {
+			if (plugin.settings!.appearance.userMessageFontColor === '--text-normal') {
 				defaultValue = colorToHex(defaultUserMessageFontColor);
 			}
 
 			color.setValue(defaultValue).onChange(async value => {
 				const hexValue = colorToHex(value);
-				plugin.settings.appearance.userMessageFontColor = hexValue;
+				plugin.settings!.appearance.userMessageFontColor = hexValue;
 				const messageContainer = document.querySelector('#messageContainer');
 				if (messageContainer) {
 					const userMessages = messageContainer.querySelectorAll('.userMessage');
@@ -286,15 +287,15 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addColorPicker(color => {
 			colorPicker4 = color;
 
-			let defaultValue = plugin.settings.appearance.userMessageBackgroundColor;
+			let defaultValue = plugin.settings!.appearance.userMessageBackgroundColor;
 
-			if (plugin.settings.appearance.userMessageBackgroundColor === '--background-primary') {
+			if (plugin.settings!.appearance.userMessageBackgroundColor === '--background-primary') {
 				defaultValue = colorToHex(defaultUserMessageBackgroundColor);
 			}
 
 			color.setValue(defaultValue).onChange(async value => {
 				const hexValue = colorToHex(value);
-				plugin.settings.appearance.userMessageBackgroundColor = hexValue;
+				plugin.settings!.appearance.userMessageBackgroundColor = hexValue;
 				const messageContainer = document.querySelector('#messageContainer');
 				if (messageContainer) {
 					const userMessages = messageContainer.querySelectorAll('.userMessage');
@@ -334,15 +335,15 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addColorPicker(color => {
 			colorPicker5 = color;
 
-			let defaultValue = plugin.settings.appearance.botMessageFontColor;
+			let defaultValue = plugin.settings!.appearance.botMessageFontColor;
 
-			if (plugin.settings.appearance.botMessageFontColor === '--text-normal') {
+			if (plugin.settings!.appearance.botMessageFontColor === '--text-normal') {
 				defaultValue = colorToHex(defaultBotMessageFontColor);
 			}
 
 			color.setValue(defaultValue).onChange(async value => {
 				const hexValue = colorToHex(value);
-				plugin.settings.appearance.botMessageFontColor = hexValue;
+				plugin.settings!.appearance.botMessageFontColor = hexValue;
 				const messageContainer = document.querySelector('#messageContainer');
 				if (messageContainer) {
 					const botMessages = messageContainer.querySelectorAll('.botMessage');
@@ -382,15 +383,15 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addColorPicker(color => {
 			colorPicker6 = color;
 
-			let defaultValue = plugin.settings.appearance.botMessageBackgroundColor;
+			let defaultValue = plugin.settings!.appearance.botMessageBackgroundColor;
 
-			if (plugin.settings.appearance.botMessageBackgroundColor === '--background-secondary') {
+			if (plugin.settings!.appearance.botMessageBackgroundColor === '--background-secondary') {
 				defaultValue = colorToHex(defaultBotMessageBackgroundColor);
 			}
 
 			color.setValue(defaultValue).onChange(async value => {
 				const hexValue = colorToHex(value);
-				plugin.settings.appearance.botMessageBackgroundColor = hexValue;
+				plugin.settings!.appearance.botMessageBackgroundColor = hexValue;
 				const messageContainer = document.querySelector('#messageContainer');
 				if (messageContainer) {
 					const botMessages = messageContainer.querySelectorAll('.botMessage');
@@ -435,7 +436,7 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addColorPicker(async color => {
 			colorPicker7 = color;
 
-			let defaultValue = plugin.settings.appearance.chatBoxFontColor;
+			let defaultValue = plugin.settings!.appearance.chatBoxFontColor;
 
 			if (defaultValue === '--text-normal') {
 				defaultValue = colorToHex(defaultChatBoxFontColor);
@@ -443,7 +444,7 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 
 			color.setValue(defaultValue).onChange(async value => {
 				const hexValue = colorToHex(value);
-				plugin.settings.appearance.chatBoxFontColor = hexValue;
+				plugin.settings!.appearance.chatBoxFontColor = hexValue;
 
 				const textarea = document.querySelector('.chatbox textarea') as HTMLTextAreaElement;
 
@@ -487,7 +488,7 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 		.addColorPicker(async color => {
 			colorPicker8 = color;
 
-			let defaultValue = plugin.settings.appearance.chatBoxBackgroundColor;
+			let defaultValue = plugin.settings!.appearance.chatBoxBackgroundColor;
 
 			if (defaultValue === '--interactive-accent') {
 				defaultValue = colorToHex(defaultChatBoxBackgroundColor);
@@ -495,7 +496,7 @@ export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, 
 
 			color.setValue(defaultValue).onChange(async value => {
 				const hexValue = colorToHex(value);
-				plugin.settings.appearance.chatBoxBackgroundColor = hexValue;
+				plugin.settings!.appearance.chatBoxBackgroundColor = hexValue;
 
 				const chatbox = document.querySelector('.chatbox');
 				if (chatbox) {

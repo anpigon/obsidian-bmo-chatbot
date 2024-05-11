@@ -1,15 +1,17 @@
 import {Notice, TFile} from 'obsidian';
-import {MAXSettings, DEFAULT_SETTINGS, updateSettingsFromFrontMatter} from '../../main';
+import {updateSettingsFromFrontMatter} from '@/main';
 import {colorToHex} from '../../utils/ColorConverter';
 import {filenameMessageHistoryJSON, messageHistory} from '../../view';
-import MAXGPT from '../../main';
+import MAXPlugin from '@/main';
 import {getAbortController} from '../FetchModelResponse';
 import {fetchModelRenameTitle} from '../editor/FetchRenameNoteTitle';
 import {displayCommandBotMessage} from './BotMessage';
 import {addMessage} from './Message';
+import {DEFAULT_SETTINGS} from '@/constants';
+import {MAXSettings} from '@/types';
 
 // Commands
-export function executeCommand(input: string, settings: MAXSettings, plugin: MAXGPT) {
+export function executeCommand(input: string, settings: MAXSettings, plugin: MAXPlugin) {
 	const command = input.split(' ')[0]; // Get the first word from the input
 
 	switch (command) {
@@ -88,7 +90,7 @@ export function createBotMessage(settings: MAXSettings): HTMLDivElement {
 	return messageBlock;
 }
 
-export async function commandFalse(settings: MAXSettings, plugin: MAXGPT) {
+export async function commandFalse(settings: MAXSettings, plugin: MAXPlugin) {
 	const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 	const botMessageDiv = displayCommandBotMessage(plugin, settings, messageHistory, 'Command not recognized.');
 	messageContainer.appendChild(botMessageDiv);
@@ -98,7 +100,7 @@ export async function commandFalse(settings: MAXSettings, plugin: MAXGPT) {
 // =================== COMMAND FUNCTIONS ===================
 
 // `/help` for help commands
-export function commandHelp(plugin: MAXGPT, settings: MAXSettings) {
+export function commandHelp(plugin: MAXPlugin, settings: MAXSettings) {
 	const commandBotMessage = `<h2>Commands</h2>
   <p><code>/model [MODEL-NAME] or [VALUE]</code> - List or change model.</p>
   <p><code>/profile [PROFILE-NAME] or [VALUE]</code> - List or change profile.</p>
@@ -118,7 +120,7 @@ export function commandHelp(plugin: MAXGPT, settings: MAXSettings) {
 }
 
 // `/model "[VALUE]"` to change model.
-export async function commandModel(input: string, settings: MAXSettings, plugin: MAXGPT) {
+export async function commandModel(input: string, settings: MAXSettings, plugin: MAXPlugin) {
 	const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 	// Check if the user has not specified a model after the "/model" command
 	if (!input.split(' ')[1]) {
@@ -174,7 +176,7 @@ export async function commandModel(input: string, settings: MAXSettings, plugin:
 }
 
 // `/profile "[VALUE]"` to change profile.
-export async function commandProfile(input: string, settings: MAXSettings, plugin: MAXGPT) {
+export async function commandProfile(input: string, settings: MAXSettings, plugin: MAXPlugin) {
 	const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 
 	if (!settings.profiles.profileFolderPath) {
@@ -187,7 +189,7 @@ export async function commandProfile(input: string, settings: MAXSettings, plugi
 	}
 
 	// Fetching files from the specified folder
-	const files = plugin.app.vault.getFiles().filter(file => file.path.startsWith(plugin.settings.profiles.profileFolderPath));
+	const files = plugin.app.vault.getFiles().filter(file => file.path.startsWith(plugin.settings!.profiles.profileFolderPath));
 
 	// Sorting the files array alphabetically by file name
 	files.sort((a, b) => a.name.localeCompare(b.name));
@@ -238,8 +240,8 @@ export async function commandProfile(input: string, settings: MAXSettings, plugi
 
 		if (profileAliases[inputValue]) {
 			// If input matches a key in profileAliases
-			plugin.settings.profiles.profile = `${profileAliases[inputValue]}.md`;
-			const profileFilePath = `${plugin.settings.profiles.profileFolderPath}/${profileAliases[inputValue]}.md`;
+			plugin.settings!.profiles.profile = `${profileAliases[inputValue]}.md`;
+			const profileFilePath = `${plugin.settings!.profiles.profileFolderPath}/${profileAliases[inputValue]}.md`;
 			const currentProfile = plugin.app.vault.getAbstractFileByPath(profileFilePath) as TFile;
 			plugin.activateView();
 			await updateSettingsFromFrontMatter(plugin, currentProfile);
@@ -252,8 +254,8 @@ export async function commandProfile(input: string, settings: MAXSettings, plugi
 			// If input matches a value in profileAliases (case-insensitive)
 			const matchedProfile = Object.entries(profileAliases).find(([key, value]) => value.toLowerCase() === inputValue.toLowerCase());
 			if (matchedProfile) {
-				plugin.settings.profiles.profile = `${matchedProfile[1]}.md`;
-				const profileFilePath = `${plugin.settings.profiles.profileFolderPath}/${matchedProfile[1]}.md`;
+				plugin.settings!.profiles.profile = `${matchedProfile[1]}.md`;
+				const profileFilePath = `${plugin.settings!.profiles.profileFolderPath}/${matchedProfile[1]}.md`;
 				const currentProfile = plugin.app.vault.getAbstractFileByPath(profileFilePath) as TFile;
 				plugin.activateView();
 				await updateSettingsFromFrontMatter(plugin, currentProfile);
@@ -277,7 +279,7 @@ export async function commandProfile(input: string, settings: MAXSettings, plugi
 }
 
 // `/prompt "[VALUE]"` to change prompt.
-export async function commandPrompt(input: string, settings: MAXSettings, plugin: MAXGPT) {
+export async function commandPrompt(input: string, settings: MAXSettings, plugin: MAXPlugin) {
 	const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 
 	if (!settings.prompts.promptFolderPath) {
@@ -290,7 +292,7 @@ export async function commandPrompt(input: string, settings: MAXSettings, plugin
 	}
 
 	// Fetching files from the specified folder
-	const files = plugin.app.vault.getFiles().filter(file => file.path.startsWith(plugin.settings.prompts.promptFolderPath));
+	const files = plugin.app.vault.getFiles().filter(file => file.path.startsWith(plugin.settings!.prompts.promptFolderPath));
 
 	// Sorting the files array alphabetically by file name
 	files.sort((a, b) => a.name.localeCompare(b.name));
@@ -386,7 +388,7 @@ export async function commandPrompt(input: string, settings: MAXSettings, plugin
 }
 
 // `/ref` to turn on/off referenceCurrentNote.
-export async function commandReference(input: string, settings: MAXSettings, plugin: MAXGPT) {
+export async function commandReference(input: string, settings: MAXSettings, plugin: MAXPlugin) {
 	let commandBotMessage = '';
 	const referenceCurrentNoteElement = document.getElementById('referenceCurrentNote');
 	const inputValue = input.split(' ')[1]?.toLowerCase();
@@ -415,7 +417,7 @@ export async function commandReference(input: string, settings: MAXSettings, plu
 }
 
 // `/temp "VALUE"` to change the temperature.
-export async function commandTemperature(input: string, settings: MAXSettings, plugin: MAXGPT) {
+export async function commandTemperature(input: string, settings: MAXSettings, plugin: MAXPlugin) {
 	const inputValue = input.split(' ')[1];
 	const floatValue = parseFloat(inputValue);
 	let temperatureSettingMessage: string;
@@ -443,7 +445,7 @@ export async function commandTemperature(input: string, settings: MAXSettings, p
 }
 
 // `/maxtokens` to change max_tokens.
-export async function commandMaxTokens(input: string, settings: MAXSettings, plugin: MAXGPT) {
+export async function commandMaxTokens(input: string, settings: MAXSettings, plugin: MAXPlugin) {
 	let commandBotMessage = '';
 	const commandParts = input.split(' ');
 	const commandAction = commandParts[1] ? commandParts[1].toLowerCase() : '';
@@ -517,7 +519,7 @@ export async function commandMaxTokens(input: string, settings: MAXSettings, plu
 // }
 
 // `/append` to append current chat history to current active note.
-export async function commandAppend(plugin: MAXGPT, settings: MAXSettings) {
+export async function commandAppend(plugin: MAXPlugin, settings: MAXSettings) {
 	let markdownContent = '';
 
 	const activeFile = plugin.app.workspace.getActiveFile();
@@ -595,7 +597,7 @@ export async function commandAppend(plugin: MAXGPT, settings: MAXSettings) {
 }
 
 // `/save` to save current chat history to a note.
-export async function commandSave(plugin: MAXGPT, settings: MAXSettings) {
+export async function commandSave(plugin: MAXPlugin, settings: MAXSettings) {
 	let folderName = settings.chatHistory.chatHistoryPath;
 	// Check if the folder exists, create it if not
 	if (!(await plugin.app.vault.adapter.exists(folderName))) {
@@ -754,7 +756,7 @@ export function commandStop() {
 	}
 }
 
-export async function removeMessageThread(plugin: MAXGPT, index: number) {
+export async function removeMessageThread(plugin: MAXPlugin, index: number) {
 	const messageContainer = document.querySelector('#messageContainer');
 
 	const divElements = messageContainer?.querySelectorAll('div.botMessage, div.userMessage');

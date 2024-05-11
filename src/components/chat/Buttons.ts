@@ -1,6 +1,6 @@
 import {MarkdownRenderer, Modal, Notice, setIcon} from 'obsidian';
-import MAXGPT, {MAXSettings, checkActiveFile} from 'src/main';
-import {ANTHROPIC_MODELS, OPENAI_MODELS, activeEditor, filenameMessageHistoryJSON, lastCursorPosition, lastCursorPositionFile, messageHistory} from 'src/view';
+import MAXPlugin, {checkActiveFile} from '@/main';
+import {ANTHROPIC_MODELS, OPENAI_MODELS, activeEditor, filenameMessageHistoryJSON, lastCursorPosition, lastCursorPositionFile, messageHistory} from '@/view';
 import {
 	fetchOpenAIAPIResponseStream,
 	fetchOpenAIAPIResponse,
@@ -16,8 +16,9 @@ import {
 	fetchOpenRouterResponse,
 } from '../FetchModelResponse';
 import {getActiveFileContent} from '../editor/ReferenceCurrentNote';
+import {MAXSettings} from '@/types';
 
-export function regenerateUserButton(plugin: MAXGPT, settings: MAXSettings) {
+export function regenerateUserButton(plugin: MAXPlugin, settings: MAXSettings) {
 	const regenerateButton = document.createElement('button');
 	regenerateButton.textContent = 'regenerate';
 	setIcon(regenerateButton, 'refresh-ccw');
@@ -102,7 +103,7 @@ export function regenerateUserButton(plugin: MAXGPT, settings: MAXSettings) {
 	return regenerateButton;
 }
 
-export function displayUserEditButton(plugin: MAXGPT, settings: MAXSettings, userPre: HTMLPreElement) {
+export function displayUserEditButton(plugin: MAXPlugin, settings: MAXSettings, userPre: HTMLPreElement) {
 	const editButton = document.createElement('button');
 	editButton.textContent = 'edit';
 	setIcon(editButton, 'edit'); // Assuming setIcon is defined elsewhere
@@ -226,7 +227,7 @@ export function displayUserEditButton(plugin: MAXGPT, settings: MAXSettings, use
 	return editButton;
 }
 
-export function displayBotEditButton(plugin: MAXGPT, message: string) {
+export function displayBotEditButton(plugin: MAXPlugin, message: string) {
 	const editButton = document.createElement('button');
 	editButton.textContent = 'edit';
 	setIcon(editButton, 'edit');
@@ -382,7 +383,7 @@ export function copyMessageToClipboard(message: string) {
 }
 
 // Append button to editor
-export function displayAppendButton(plugin: MAXGPT, settings: MAXSettings, message: string) {
+export function displayAppendButton(plugin: MAXPlugin, settings: MAXSettings, message: string) {
 	const appendButton = document.createElement('button');
 	appendButton.textContent = 'append';
 	setIcon(appendButton, 'plus-square');
@@ -415,7 +416,7 @@ export function displayAppendButton(plugin: MAXGPT, settings: MAXSettings, messa
 	return appendButton;
 }
 
-export function displayTrashButton(plugin: MAXGPT) {
+export function displayTrashButton(plugin: MAXPlugin) {
 	const trashButton = document.createElement('button');
 	trashButton.textContent = 'trash';
 	setIcon(trashButton, 'trash');
@@ -463,7 +464,7 @@ export function displayTrashButton(plugin: MAXGPT) {
 	return trashButton;
 }
 
-export async function deleteMessage(plugin: MAXGPT, index: number) {
+export async function deleteMessage(plugin: MAXPlugin, index: number) {
 	const messageContainer = document.querySelector('#messageContainer');
 
 	const divElements = messageContainer?.querySelectorAll('div.botMessage, div.userMessage');

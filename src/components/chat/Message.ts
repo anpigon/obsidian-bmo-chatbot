@@ -1,9 +1,10 @@
-import {filenameMessageHistoryJSON, messageHistory} from 'src/view';
+import {filenameMessageHistoryJSON, messageHistory} from '@/view';
 import {displayAppendButton, displayBotCopyButton, displayBotEditButton} from './Buttons';
-import MAXGPT, {MAXSettings} from 'src/main';
+import MAXPlugin from '@/main';
+import {MAXSettings} from '@/types';
 
 // Add a new message to the messageHistory array and save it to the file
-export async function addMessage(plugin: MAXGPT, input: string, messageType: 'userMessage' | 'botMessage', settings: MAXSettings, index: number) {
+export async function addMessage(plugin: MAXPlugin, input: string, messageType: 'userMessage' | 'botMessage', settings: MAXSettings, index: number) {
 	const messageObj: {role: string; content: string} = {
 		role: '',
 		content: '',

@@ -1,9 +1,10 @@
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 import builtins from 'builtin-modules';
 import {defineConfig} from 'vite';
 import {pathToFileURL} from 'url';
 import typescript from '@rollup/plugin-typescript';
 import copy from 'rollup-plugin-copy';
+import path from 'path';
 
 export default defineConfig(({mode}) => {
 	return {
@@ -19,9 +20,12 @@ export default defineConfig(({mode}) => {
 				hook: 'writeBundle',
 			}),
 		],
+		resolve: {
+			alias: [{find: '@/', replacement: path.resolve(__dirname, 'src')}],
+		},
 		build: {
 			lib: {
-				entry: 'src/main',
+				entry: './src/main',
 				formats: ['cjs'],
 			},
 			rollupOptions: {

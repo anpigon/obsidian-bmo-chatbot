@@ -1,18 +1,18 @@
 import {SettingTab, setIcon} from 'obsidian';
-import MAXGPT from 'src/main';
+import MAXPlugin from '@/main';
 import {addOpenAIConnectionSettings} from './APIConnections/OpenAIConnections';
 import {addMistralConnectionSettings} from './APIConnections/MistralConnections';
 import {addGoogleGeminiConnectionSettings} from './APIConnections/GoogleGeminiConnections';
 import {addAnthropicConnectionSettings} from './APIConnections/AnthropicConnections';
 import {addOpenRouterConnectionSettings} from './APIConnections/OpenRouterConnections';
 
-export function addAPIConnectionSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export function addAPIConnectionSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'API Connections'});
 
-	const initialState = plugin.settings.toggleAPIConnectionSettings;
+	const initialState = plugin.settings!.toggleAPIConnectionSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -28,11 +28,11 @@ export function addAPIConnectionSettings(containerEl: HTMLElement, plugin: MAXGP
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleAPIConnectionSettings = false;
+			plugin.settings!.toggleAPIConnectionSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleAPIConnectionSettings = true;
+			plugin.settings!.toggleAPIConnectionSettings = true;
 		}
 		await plugin.saveSettings();
 	});

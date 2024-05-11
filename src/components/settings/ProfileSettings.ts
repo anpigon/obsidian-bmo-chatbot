@@ -1,14 +1,15 @@
 import {Setting, SettingTab, TFile, TFolder, setIcon} from 'obsidian';
-import MAXGPT, {DEFAULT_SETTINGS, updateSettingsFromFrontMatter} from 'src/main';
+import {DEFAULT_SETTINGS} from '../../constants';
+import MAXPlugin, {updateSettingsFromFrontMatter} from '@/main';
 
 // Profile Settings
-export function addProfileSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export function addProfileSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'Profiles'});
 
-	const initialState = plugin.settings.toggleProfileSettings;
+	const initialState = plugin.settings!.toggleProfileSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -24,11 +25,11 @@ export function addProfileSettings(containerEl: HTMLElement, plugin: MAXGPT, Set
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleProfileSettings = false;
+			plugin.settings!.toggleProfileSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleProfileSettings = true;
+			plugin.settings!.toggleProfileSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -37,9 +38,9 @@ export function addProfileSettings(containerEl: HTMLElement, plugin: MAXGPT, Set
 		.setName('Profile')
 		.setDesc('Select a profile.')
 		.addDropdown(dropdown => {
-			if (plugin.settings.profiles.profileFolderPath !== '') {
+			if (plugin.settings!.profiles.profileFolderPath !== '') {
 				// Fetching files from the specified folder
-				const files = plugin.app.vault.getFiles().filter(file => file.path.startsWith(plugin.settings.profiles.profileFolderPath));
+				const files = plugin.app.vault.getFiles().filter(file => file.path.startsWith(plugin.settings!.profiles.profileFolderPath));
 
 				// Sorting the files array alphabetically by file name
 				files.sort((a, b) => a.name.localeCompare(b.name));
@@ -72,9 +73,9 @@ export function addProfileSettings(containerEl: HTMLElement, plugin: MAXGPT, Set
 				});
 			}
 
-			dropdown.setValue(plugin.settings.profiles.profile || DEFAULT_SETTINGS.profiles.profile).onChange(async value => {
-				plugin.settings.profiles.profile = value ? value : DEFAULT_SETTINGS.profiles.profile;
-				const profileFilePath = `${plugin.settings.profiles.profileFolderPath}/${plugin.settings.profiles.profile}`;
+			dropdown.setValue(plugin.settings!.profiles.profile || DEFAULT_SETTINGS.profiles.profile).onChange(async value => {
+				plugin.settings!.profiles.profile = value ? value : DEFAULT_SETTINGS.profiles.profile;
+				const profileFilePath = `${plugin.settings!.profiles.profileFolderPath}/${plugin.settings!.profiles.profile}`;
 				const currentProfile = plugin.app.vault.getAbstractFileByPath(profileFilePath) as TFile;
 				plugin.activateView();
 				await updateSettingsFromFrontMatter(plugin, currentProfile);
@@ -89,16 +90,16 @@ export function addProfileSettings(containerEl: HTMLElement, plugin: MAXGPT, Set
 		.addText(text =>
 			text
 				.setPlaceholder('MAX/Profiles')
-				.setValue(plugin.settings.profiles.profileFolderPath || DEFAULT_SETTINGS.profiles.profileFolderPath)
+				.setValue(plugin.settings!.profiles.profileFolderPath || DEFAULT_SETTINGS.profiles.profileFolderPath)
 				.onChange(async value => {
-					plugin.settings.profiles.profileFolderPath = value ? value : DEFAULT_SETTINGS.profiles.profileFolderPath;
+					plugin.settings!.profiles.profileFolderPath = value ? value : DEFAULT_SETTINGS.profiles.profileFolderPath;
 					if (value) {
-						let folderPath = plugin.settings.profiles.profileFolderPath.trim() || DEFAULT_SETTINGS.profiles.profileFolderPath;
+						let folderPath = plugin.settings!.profiles.profileFolderPath.trim() || DEFAULT_SETTINGS.profiles.profileFolderPath;
 
 						// Remove trailing '/' if it exists
 						while (folderPath.endsWith('/')) {
 							folderPath = folderPath.substring(0, folderPath.length - 1);
-							plugin.settings.profiles.profileFolderPath = folderPath;
+							plugin.settings!.profiles.profileFolderPath = folderPath;
 						}
 
 						const folder = plugin.app.vault.getAbstractFileByPath(folderPath);

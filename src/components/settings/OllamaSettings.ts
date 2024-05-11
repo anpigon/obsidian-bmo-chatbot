@@ -1,15 +1,16 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
-import {addDescriptionLink} from 'src/utils/DescriptionLink';
+import MAXPlugin from '@/main';
+import {addDescriptionLink} from '@/utils/DescriptionLink';
+import {DEFAULT_SETTINGS} from '@/constants';
 
 // Ollama Settings
-export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'Ollama Connection'});
 
-	const initialState = plugin.settings.toggleOllamaSettings;
+	const initialState = plugin.settings!.toggleOllamaSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -25,11 +26,11 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleOllamaSettings = false;
+			plugin.settings!.toggleOllamaSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleOllamaSettings = true;
+			plugin.settings!.toggleOllamaSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -40,10 +41,10 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('http://localhost:11434')
-				.setValue(plugin.settings.OllamaConnection.RESTAPIURL || DEFAULT_SETTINGS.OllamaConnection.RESTAPIURL)
+				.setValue(plugin.settings!.OllamaConnection.RESTAPIURL || DEFAULT_SETTINGS.OllamaConnection.RESTAPIURL)
 				.onChange(async value => {
-					plugin.settings.OllamaConnection.ollamaModels = [];
-					plugin.settings.OllamaConnection.RESTAPIURL = value ? value : DEFAULT_SETTINGS.OllamaConnection.RESTAPIURL;
+					plugin.settings!.OllamaConnection.ollamaModels = [];
+					plugin.settings!.OllamaConnection.RESTAPIURL = value ? value : DEFAULT_SETTINGS.OllamaConnection.RESTAPIURL;
 					await plugin.saveSettings();
 				})
 				.inputEl.addEventListener('focusout', async () => {
@@ -62,8 +63,8 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 			)
 		)
 		.addToggle(toggle =>
-			toggle.setValue(plugin.settings.OllamaConnection.allowStream).onChange(value => {
-				plugin.settings.OllamaConnection.allowStream = value;
+			toggle.setValue(plugin.settings!.OllamaConnection.allowStream).onChange(value => {
+				plugin.settings!.OllamaConnection.allowStream = value;
 				plugin.saveSettings();
 			})
 		);
@@ -75,7 +76,7 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 	advancedToggleSettingContainer.createEl('h2', {text: 'Advanced Settings'});
 
 	// Determine the initial state for Advanced Settings from the plugin's settings
-	const advancedInitialState = plugin.settings.toggleAdvancedSettings;
+	const advancedInitialState = plugin.settings!.toggleAdvancedSettings;
 	const advancedChevronIcon = advancedToggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -93,11 +94,11 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		if (isOpen) {
 			setIcon(advancedChevronIcon, 'chevron-right'); // Close state
 			advancedSettingsContainer.style.display = 'none';
-			plugin.settings.toggleAdvancedSettings = false;
+			plugin.settings!.toggleAdvancedSettings = false;
 		} else {
 			setIcon(advancedChevronIcon, 'chevron-down'); // Open state
 			advancedSettingsContainer.style.display = 'block';
-			plugin.settings.toggleAdvancedSettings = true;
+			plugin.settings!.toggleAdvancedSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -108,16 +109,16 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('0')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.mirostat || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.mirostat || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const intValue = parseInt(value, 10); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Check if the parsed value is a valid integer, if not, fallback to the default URL
 					if (isNaN(intValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.mirostat = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat;
+						plugin.settings!.OllamaConnection.ollamaParameters.mirostat = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat;
 					} else {
-						plugin.settings.OllamaConnection.ollamaParameters.mirostat = intValue.toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.mirostat = intValue.toString();
 					}
 
 					await plugin.saveSettings();
@@ -135,17 +136,17 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('0.1')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.mirostat_eta || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_eta)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.mirostat_eta || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_eta)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const floatValue = parseFloat(value); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Determine if the float value is an integer (whole number)
 					if (!isNaN(floatValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.mirostat_eta = floatValue.toFixed(2).toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.mirostat_eta = floatValue.toFixed(2).toString();
 					} else {
 						// Fallback to the default value if input is not a valid number
-						plugin.settings.OllamaConnection.ollamaParameters.mirostat_eta = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_eta;
+						plugin.settings!.OllamaConnection.ollamaParameters.mirostat_eta = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_eta;
 					}
 
 					await plugin.saveSettings();
@@ -163,17 +164,17 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('5.00')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.mirostat_tau || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_tau)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.mirostat_tau || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_tau)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const floatValue = parseFloat(value); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Determine if the float value is an integer (whole number)
 					if (!isNaN(floatValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.mirostat_tau = floatValue.toFixed(2).toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.mirostat_tau = floatValue.toFixed(2).toString();
 					} else {
 						// Fallback to the default value if input is not a valid number
-						plugin.settings.OllamaConnection.ollamaParameters.mirostat_tau = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_tau;
+						plugin.settings!.OllamaConnection.ollamaParameters.mirostat_tau = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_tau;
 					}
 
 					await plugin.saveSettings();
@@ -189,16 +190,16 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('2048')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.num_ctx || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_ctx)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.num_ctx || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_ctx)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const intValue = parseInt(value, 10); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Check if the parsed value is a valid integer, if not, fallback to the default URL
 					if (isNaN(intValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.num_ctx = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_ctx;
+						plugin.settings!.OllamaConnection.ollamaParameters.num_ctx = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_ctx;
 					} else {
-						plugin.settings.OllamaConnection.ollamaParameters.num_ctx = intValue.toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.num_ctx = intValue.toString();
 					}
 
 					await plugin.saveSettings();
@@ -214,16 +215,16 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('0')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.num_gqa || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_gqa)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.num_gqa || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_gqa)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const intValue = parseInt(value, 10); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Check if the parsed value is a valid integer, if not, fallback to the default URL
 					if (isNaN(intValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.num_gqa = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_gqa;
+						plugin.settings!.OllamaConnection.ollamaParameters.num_gqa = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_gqa;
 					} else {
-						plugin.settings.OllamaConnection.ollamaParameters.num_gqa = intValue.toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.num_gqa = intValue.toString();
 					}
 
 					await plugin.saveSettings();
@@ -241,16 +242,16 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('0')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.num_thread || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_thread)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.num_thread || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_thread)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const intValue = parseInt(value, 10); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Check if the parsed value is a valid integer, if not, fallback to the default URL
 					if (isNaN(intValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.num_thread = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_thread;
+						plugin.settings!.OllamaConnection.ollamaParameters.num_thread = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_thread;
 					} else {
-						plugin.settings.OllamaConnection.ollamaParameters.num_thread = intValue.toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.num_thread = intValue.toString();
 					}
 
 					await plugin.saveSettings();
@@ -266,16 +267,16 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('64')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.repeat_last_n || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_last_n)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.repeat_last_n || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_last_n)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const intValue = parseInt(value, 10); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Check if the parsed value is a valid integer, if not, fallback to the default URL
 					if (isNaN(intValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.repeat_last_n = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_last_n;
+						plugin.settings!.OllamaConnection.ollamaParameters.repeat_last_n = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_last_n;
 					} else {
-						plugin.settings.OllamaConnection.ollamaParameters.repeat_last_n = intValue.toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.repeat_last_n = intValue.toString();
 					}
 
 					await plugin.saveSettings();
@@ -293,17 +294,19 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('1.1')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.repeat_penalty || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_penalty)
+				.setValue(
+					plugin.settings!.OllamaConnection.ollamaParameters.repeat_penalty || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_penalty
+				)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const floatValue = parseFloat(value); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Determine if the float value is an integer (whole number)
 					if (isNaN(floatValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.repeat_penalty = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_penalty;
+						plugin.settings!.OllamaConnection.ollamaParameters.repeat_penalty = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_penalty;
 					} else {
 						// Fallback to the default value if input is not a valid number
-						plugin.settings.OllamaConnection.ollamaParameters.repeat_penalty = floatValue.toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.repeat_penalty = floatValue.toString();
 					}
 
 					await plugin.saveSettings();
@@ -321,16 +324,16 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('0')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.seed || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.seed)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.seed || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.seed)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const intValue = parseInt(value, 10); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Check if the parsed value is a valid integer, if not, fallback to the default URL
 					if (isNaN(intValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.seed = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.seed;
+						plugin.settings!.OllamaConnection.ollamaParameters.seed = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.seed;
 					} else {
-						plugin.settings.OllamaConnection.ollamaParameters.seed = intValue.toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.seed = intValue.toString();
 					}
 
 					await plugin.saveSettings();
@@ -349,14 +352,14 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 			text
 				.setPlaceholder('stop, \\n, user:')
 				.setValue(
-					plugin.settings.OllamaConnection.ollamaParameters.stop && Array.isArray(plugin.settings.OllamaConnection.ollamaParameters.stop)
-						? plugin.settings.OllamaConnection.ollamaParameters.stop.join(', ')
+					plugin.settings!.OllamaConnection.ollamaParameters.stop && Array.isArray(plugin.settings!.OllamaConnection.ollamaParameters.stop)
+						? plugin.settings!.OllamaConnection.ollamaParameters.stop.join(', ')
 						: DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.stop.join(', ')
 				)
 				.onChange(async value => {
 					// Split the input string by commas, trim whitespace, and ensure it's always stored as an array
 					const stopsArray = value ? value.split(',').map(s => s.trim()) : [...DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.stop];
-					plugin.settings.OllamaConnection.ollamaParameters.stop = stopsArray;
+					plugin.settings!.OllamaConnection.ollamaParameters.stop = stopsArray;
 					await plugin.saveSettings();
 				})
 				.inputEl.addEventListener('focusout', async () => {
@@ -372,16 +375,16 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('1.0')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.tfs_z || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.tfs_z)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.tfs_z || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.tfs_z)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const floatValue = parseFloat(value); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Determine if the float value is an integer (whole number)
 					if (isNaN(floatValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.tfs_z = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.tfs_z;
+						plugin.settings!.OllamaConnection.ollamaParameters.tfs_z = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.tfs_z;
 					} else {
-						plugin.settings.OllamaConnection.ollamaParameters.tfs_z = floatValue.toFixed(2).toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.tfs_z = floatValue.toFixed(2).toString();
 					}
 
 					await plugin.saveSettings();
@@ -399,16 +402,16 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('40')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.top_k || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_k)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.top_k || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_k)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const intValue = parseInt(value, 10); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Check if the parsed value is a valid integer, if not, fallback to the default URL
 					if (isNaN(intValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.top_k = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_k;
+						plugin.settings!.OllamaConnection.ollamaParameters.top_k = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_k;
 					} else {
-						plugin.settings.OllamaConnection.ollamaParameters.top_k = intValue.toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.top_k = intValue.toString();
 					}
 
 					await plugin.saveSettings();
@@ -426,16 +429,16 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('1.0')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.top_p || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_p)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.top_p || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_p)
 				.onChange(async value => {
 					// Parse the input value as an integer
 					const floatValue = parseFloat(value); // 10 is the radix parameter to ensure parsing is done in base 10
 
 					// Determine if the float value is an integer (whole number)
 					if (isNaN(floatValue)) {
-						plugin.settings.OllamaConnection.ollamaParameters.top_p = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_p;
+						plugin.settings!.OllamaConnection.ollamaParameters.top_p = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_p;
 					} else {
-						plugin.settings.OllamaConnection.ollamaParameters.top_p = floatValue.toFixed(2).toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.top_p = floatValue.toFixed(2).toString();
 					}
 
 					await plugin.saveSettings();
@@ -453,7 +456,7 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 		.addText(text =>
 			text
 				.setPlaceholder('30s')
-				.setValue(plugin.settings.OllamaConnection.ollamaParameters.keep_alive || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.keep_alive)
+				.setValue(plugin.settings!.OllamaConnection.ollamaParameters.keep_alive || DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.keep_alive)
 				.onChange(async value => {
 					// Regular expression to validate the input value and capture the number and unit
 					const match = value.match(/^(-?\d+)(m|hr|h)?$/);
@@ -473,10 +476,10 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, Sett
 						}
 
 						// Store the value in seconds
-						plugin.settings.OllamaConnection.ollamaParameters.keep_alive = seconds.toString();
+						plugin.settings!.OllamaConnection.ollamaParameters.keep_alive = seconds.toString();
 					} else {
 						// If the input is invalid, revert to the default setting
-						plugin.settings.OllamaConnection.ollamaParameters.keep_alive = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.keep_alive;
+						plugin.settings!.OllamaConnection.ollamaParameters.keep_alive = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.keep_alive;
 					}
 
 					await plugin.saveSettings();

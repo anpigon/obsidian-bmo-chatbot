@@ -1,237 +1,22 @@
 import {DataWriteOptions, Plugin, TFile} from 'obsidian';
-import {MAXView, VIEW_TYPE_CHATBOT} from './view';
-import {MAXSettingTab} from './settings';
 import {promptSelectGenerateCommand, renameTitleCommand} from './components/editor/EditorCommands';
+import {DEFAULT_SETTINGS} from './constants';
+import {MAXSettingTab} from './settings';
 import {colorToHex, isValidHexColor} from './utils/ColorConverter';
-import {DEFAULT_MODEL, OLLAMA_REST_API_URL} from './constants';
+import {MAXView, VIEW_TYPE_CHATBOT} from './view';
 
 import './styles.css';
-
-export interface MAXSettings {
-	profiles: {
-		profile: string;
-		profileFolderPath: string;
-	};
-	general: {
-		model: string;
-		system_role: string;
-		max_tokens: string;
-		temperature: string;
-		allowReferenceCurrentNote: boolean;
-	};
-	appearance: {
-		userName: string;
-		chatbotName: string;
-		chatbotContainerBackgroundColor: string;
-		messageContainerBackgroundColor: string;
-		userMessageFontColor: string;
-		userMessageBackgroundColor: string;
-		botMessageFontColor: string;
-		botMessageBackgroundColor: string;
-		chatBoxFontColor: string;
-		chatBoxBackgroundColor: string;
-		allowHeader: boolean;
-	};
-	prompts: {
-		prompt: string;
-		promptFolderPath: string;
-	};
-	editor: {
-		prompt_select_generate_system_role: string;
-	};
-	chatHistory: {
-		chatHistoryPath: string;
-		templateFilePath: string;
-		allowRenameNoteTitle: boolean;
-	};
-	OllamaConnection: {
-		RESTAPIURL: string;
-		allowStream: boolean;
-		ollamaParameters: {
-			mirostat: string;
-			mirostat_eta: string;
-			mirostat_tau: string;
-			num_ctx: string;
-			num_gqa: string;
-			num_thread: string;
-			repeat_last_n: string;
-			repeat_penalty: string;
-			seed: string;
-			stop: string[];
-			tfs_z: string;
-			top_k: string;
-			top_p: string;
-			keep_alive: string;
-		};
-		ollamaModels: string[];
-	};
-	RESTAPIURLConnection: {
-		APIKey: string;
-		RESTAPIURL: string;
-		allowStream: boolean;
-		RESTAPIURLModels: string[];
-	};
-	APIConnections: {
-		anthropic: {
-			APIKey: string;
-			anthropicModels: string[];
-		};
-		googleGemini: {
-			APIKey: string;
-			geminiModels: string[];
-		};
-		mistral: {
-			APIKey: string;
-			allowStream: boolean;
-			mistralModels: string[];
-		};
-		openAI: {
-			APIKey: string;
-			openAIBaseUrl: string;
-			allowStream: boolean;
-			openAIBaseModels: string[];
-		};
-		openRouter: {
-			APIKey: string;
-			allowStream: boolean;
-			openRouterModels: string[];
-		};
-	};
-	toggleGeneralSettings: boolean;
-	toggleAppearanceSettings: boolean;
-	togglePromptSettings: boolean;
-	toggleEditorSettings: boolean;
-	toggleChatHistorySettings: boolean;
-	toggleProfileSettings: boolean;
-	toggleAPIConnectionSettings: boolean;
-	toggleOpenAISettings: boolean;
-	toggleMistralSettings: boolean;
-	toggleGoogleGeminiSettings: boolean;
-	toggleAnthropicSettings: boolean;
-	toggleRESTAPIURLSettings: boolean;
-	toggleOpenRouterSettings: boolean;
-	toggleOllamaSettings: boolean;
-	toggleAdvancedSettings: boolean;
-	allModels: string[];
-}
-
-export const DEFAULT_SETTINGS: MAXSettings = {
-	profiles: {
-		profile: 'MAX.md',
-		profileFolderPath: 'MAX/Profiles',
-	},
-	general: {
-		model: DEFAULT_MODEL,
-		system_role: 'You are a helpful assistant.',
-		max_tokens: '',
-		temperature: '1.00',
-		allowReferenceCurrentNote: false,
-	},
-	appearance: {
-		userName: 'USER',
-		chatbotName: 'MAX',
-		chatbotContainerBackgroundColor: '--background-secondary',
-		messageContainerBackgroundColor: '--background-secondary',
-		userMessageFontColor: '--text-normal',
-		userMessageBackgroundColor: '--background-primary',
-		botMessageFontColor: '--text-normal',
-		botMessageBackgroundColor: '--background-secondary',
-		chatBoxFontColor: '--text-normal',
-		chatBoxBackgroundColor: '--interactive-accent',
-		allowHeader: true,
-	},
-	prompts: {
-		prompt: '',
-		promptFolderPath: 'MAX/Prompts',
-	},
-	editor: {
-		prompt_select_generate_system_role: 'Output user request.',
-	},
-	chatHistory: {
-		chatHistoryPath: 'MAX/History',
-		templateFilePath: '',
-		allowRenameNoteTitle: false,
-	},
-	OllamaConnection: {
-		RESTAPIURL: OLLAMA_REST_API_URL,
-		allowStream: false,
-		ollamaParameters: {
-			keep_alive: '',
-			mirostat: '0',
-			mirostat_eta: '0.10',
-			mirostat_tau: '5.00',
-			num_ctx: '2048',
-			num_gqa: '',
-			num_thread: '',
-			repeat_last_n: '64',
-			repeat_penalty: '1.10',
-			seed: '',
-			stop: [],
-			tfs_z: '1.00',
-			top_k: '40',
-			top_p: '0.90',
-		},
-		ollamaModels: [],
-	},
-	RESTAPIURLConnection: {
-		APIKey: '',
-		RESTAPIURL: '',
-		allowStream: false,
-		RESTAPIURLModels: [],
-	},
-	APIConnections: {
-		anthropic: {
-			APIKey: '',
-			anthropicModels: [],
-		},
-		googleGemini: {
-			APIKey: '',
-			geminiModels: [],
-		},
-		mistral: {
-			APIKey: '',
-			allowStream: false,
-			mistralModels: [],
-		},
-		openAI: {
-			APIKey: '',
-			openAIBaseUrl: 'https://api.openai.com/v1',
-			allowStream: true,
-			openAIBaseModels: [],
-		},
-		openRouter: {
-			APIKey: '',
-			allowStream: false,
-			openRouterModels: [],
-		},
-	},
-	toggleGeneralSettings: true,
-	toggleAppearanceSettings: false,
-	togglePromptSettings: false,
-	toggleEditorSettings: false,
-	toggleChatHistorySettings: false,
-	toggleProfileSettings: false,
-	toggleAPIConnectionSettings: true,
-	toggleOpenAISettings: false,
-	toggleMistralSettings: false,
-	toggleGoogleGeminiSettings: false,
-	toggleAnthropicSettings: false,
-	toggleRESTAPIURLSettings: true,
-	toggleOpenRouterSettings: false,
-	toggleOllamaSettings: true,
-	toggleAdvancedSettings: false,
-	allModels: [],
-};
+import {MAXSettings} from './types';
 
 export let checkActiveFile: TFile | null = null;
 
-export default class MAXGPT extends Plugin {
-	settings: MAXSettings;
+export default class MAXPlugin extends Plugin {
+	settings: MAXSettings | undefined;
 
 	async onload() {
 		await this.loadSettings();
 
-		const folderPath = this.settings.profiles.profileFolderPath || DEFAULT_SETTINGS.profiles.profileFolderPath;
+		const folderPath = this.settings?.profiles.profileFolderPath || DEFAULT_SETTINGS.profiles.profileFolderPath;
 
 		const defaultFilePath = `${folderPath}/${DEFAULT_SETTINGS.profiles.profile}`;
 		const defaultProfile = this.app.vault.getAbstractFileByPath(defaultFilePath) as TFile;
@@ -270,10 +55,10 @@ export default class MAXGPT extends Plugin {
 					if (file.path === defaultFilePath) {
 						this.app.vault.create(defaultFilePath, '');
 					} else {
-						if (this.settings.profiles.profile === file.name) {
-							this.settings.profiles.profile = DEFAULT_SETTINGS.profiles.profile;
+						if (this.settings!.profiles.profile === file.name) {
+							this.settings!.profiles.profile = DEFAULT_SETTINGS.profiles.profile;
 							const fileContent = (await this.app.vault.read(defaultProfile)).replace(/^---\s*[\s\S]*?---/, '').trim();
-							this.settings.general.system_role = fileContent;
+							this.settings!.general.system_role = fileContent;
 							await updateSettingsFromFrontMatter(this, defaultProfile);
 							await this.saveSettings();
 						}
@@ -286,11 +71,11 @@ export default class MAXGPT extends Plugin {
 		// Update frontmatter when the profile file is modified
 		this.registerEvent(
 			this.app.vault.on('modify', async (file: TFile) => {
-				const currentProfilePath = `${folderPath}/${this.settings.profiles.profile}`;
+				const currentProfilePath = `${folderPath}/${this.settings!.profiles.profile}`;
 				if (file.path === currentProfilePath) {
 					await updateSettingsFromFrontMatter(this, file);
 					const fileContent = (await this.app.vault.read(file)).replace(/^---\s*[\s\S]*?---/, '').trim();
-					this.settings.general.system_role = fileContent;
+					this.settings!.general.system_role = fileContent;
 					await this.saveSettings();
 				}
 			})
@@ -299,10 +84,10 @@ export default class MAXGPT extends Plugin {
 		this.registerEvent(
 			this.app.vault.on('rename', async (file: TFile, oldPath: string) => {
 				try {
-					const currentProfilePath = `${folderPath}/${this.settings.profiles.profile}`;
+					const currentProfilePath = `${folderPath}/${this.settings!.profiles.profile}`;
 					if (oldPath === currentProfilePath) {
-						this.settings.profiles.profile = file.name;
-						this.settings.appearance.chatbotName = file.basename;
+						this.settings!.profiles.profile = file.name;
+						this.settings!.appearance.chatbotName = file.basename;
 						await this.saveSettings();
 					}
 
@@ -321,7 +106,8 @@ export default class MAXGPT extends Plugin {
 
 						await this.app.vault.adapter.remove(filenameMessageHistoryPath + oldProfileMessageHistory);
 					}
-				} catch (error) {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				} catch (error: any) {
 					if (error.message.includes('ENOENT: no such file or directory, unlink')) {
 						// Ignore the specific error and do nothing
 					} else {
@@ -367,6 +153,7 @@ export default class MAXGPT extends Plugin {
 			hotkeys: [
 				{
 					modifiers: ['Mod'],
+					// eslint-disable-next-line quotes
 					key: "'",
 				},
 			],
@@ -455,14 +242,14 @@ export default class MAXGPT extends Plugin {
 	}
 
 	async saveSettings() {
-		const currentProfileFile = `${this.settings.profiles.profileFolderPath}/${this.settings.profiles.profile}`;
+		const currentProfileFile = `${this.settings!.profiles.profileFolderPath}/${this.settings!.profiles.profile}`;
 		const currentProfile = this.app.vault.getAbstractFileByPath(currentProfileFile) as TFile;
 		updateFrontMatter(this, currentProfile);
 		await this.saveData(this.settings);
 	}
 }
 
-export async function defaultFrontMatter(plugin: MAXGPT, file: TFile) {
+export async function defaultFrontMatter(plugin: MAXPlugin, file: TFile) {
 	// Define a callback function to modify the frontmatter
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const setDefaultFrontMatter = async (frontmatter: any) => {
@@ -514,42 +301,42 @@ export async function defaultFrontMatter(plugin: MAXGPT, file: TFile) {
 	plugin.app.vault.append(file, DEFAULT_SETTINGS.general.system_role);
 }
 
-export async function updateSettingsFromFrontMatter(plugin: MAXGPT, file: TFile) {
+export async function updateSettingsFromFrontMatter(plugin: MAXPlugin, file: TFile) {
 	// Define a callback function to modify the frontmatter
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const updateSettings = async (frontmatter: any) => {
 		// Add or modify properties in the frontmatter
-		plugin.settings.general.model = frontmatter.model;
-		plugin.settings.general.max_tokens = frontmatter.max_tokens;
-		plugin.settings.general.temperature = frontmatter.temperature;
-		plugin.settings.general.allowReferenceCurrentNote = frontmatter.reference_current_note;
-		plugin.settings.prompts.prompt = `${frontmatter.prompt}.md`;
-		plugin.settings.appearance.userName = frontmatter.user_name;
-		plugin.settings.appearance.chatbotName = file.basename;
-		plugin.settings.appearance.allowHeader = frontmatter.allow_header;
-		plugin.settings.appearance.chatbotContainerBackgroundColor = `#${frontmatter.chatbot_container_background_color}`;
-		plugin.settings.appearance.messageContainerBackgroundColor = `#${frontmatter.message_container_background_color}`;
-		plugin.settings.appearance.userMessageFontColor = `#${frontmatter.user_message_font_color}`;
-		plugin.settings.appearance.userMessageBackgroundColor = `#${frontmatter.user_message_background_color}`;
-		plugin.settings.appearance.botMessageFontColor = `#${frontmatter.bot_message_font_color}`;
-		plugin.settings.appearance.botMessageBackgroundColor = `#${frontmatter.chatbot_message_background_color}`;
-		plugin.settings.appearance.chatBoxFontColor = `#${frontmatter.chatbox_font_color}`;
-		plugin.settings.appearance.chatBoxBackgroundColor = `#${frontmatter.chatbox_background_color}`;
-		plugin.settings.editor.prompt_select_generate_system_role = frontmatter.prompt_select_generate_system_role;
-		plugin.settings.OllamaConnection.ollamaParameters.mirostat = frontmatter.ollama_mirostat;
-		plugin.settings.OllamaConnection.ollamaParameters.mirostat_eta = frontmatter.ollama_mirostat_eta;
-		plugin.settings.OllamaConnection.ollamaParameters.mirostat_tau = frontmatter.ollama_mirostat_tau;
-		plugin.settings.OllamaConnection.ollamaParameters.num_ctx = frontmatter.ollama_num_ctx;
-		plugin.settings.OllamaConnection.ollamaParameters.num_gqa = frontmatter.ollama_num_gqa;
-		plugin.settings.OllamaConnection.ollamaParameters.num_thread = frontmatter.ollama_num_thread;
-		plugin.settings.OllamaConnection.ollamaParameters.repeat_last_n = frontmatter.ollama_repeat_last_n;
-		plugin.settings.OllamaConnection.ollamaParameters.repeat_penalty = frontmatter.ollama_repeat_penalty;
-		plugin.settings.OllamaConnection.ollamaParameters.seed = frontmatter.ollama_seed;
-		plugin.settings.OllamaConnection.ollamaParameters.stop = frontmatter.ollama_stop;
-		plugin.settings.OllamaConnection.ollamaParameters.tfs_z = frontmatter.ollama_tfs_z;
-		plugin.settings.OllamaConnection.ollamaParameters.top_k = frontmatter.ollama_top_k;
-		plugin.settings.OllamaConnection.ollamaParameters.top_p = frontmatter.ollama_top_p;
-		plugin.settings.OllamaConnection.ollamaParameters.keep_alive = frontmatter.ollama_keep_alive;
+		plugin.settings!.general.model = frontmatter.model;
+		plugin.settings!.general.max_tokens = frontmatter.max_tokens;
+		plugin.settings!.general.temperature = frontmatter.temperature;
+		plugin.settings!.general.allowReferenceCurrentNote = frontmatter.reference_current_note;
+		plugin.settings!.prompts.prompt = `${frontmatter.prompt}.md`;
+		plugin.settings!.appearance.userName = frontmatter.user_name;
+		plugin.settings!.appearance.chatbotName = file.basename;
+		plugin.settings!.appearance.allowHeader = frontmatter.allow_header;
+		plugin.settings!.appearance.chatbotContainerBackgroundColor = `#${frontmatter.chatbot_container_background_color}`;
+		plugin.settings!.appearance.messageContainerBackgroundColor = `#${frontmatter.message_container_background_color}`;
+		plugin.settings!.appearance.userMessageFontColor = `#${frontmatter.user_message_font_color}`;
+		plugin.settings!.appearance.userMessageBackgroundColor = `#${frontmatter.user_message_background_color}`;
+		plugin.settings!.appearance.botMessageFontColor = `#${frontmatter.bot_message_font_color}`;
+		plugin.settings!.appearance.botMessageBackgroundColor = `#${frontmatter.chatbot_message_background_color}`;
+		plugin.settings!.appearance.chatBoxFontColor = `#${frontmatter.chatbox_font_color}`;
+		plugin.settings!.appearance.chatBoxBackgroundColor = `#${frontmatter.chatbox_background_color}`;
+		plugin.settings!.editor.prompt_select_generate_system_role = frontmatter.prompt_select_generate_system_role;
+		plugin.settings!.OllamaConnection.ollamaParameters.mirostat = frontmatter.ollama_mirostat;
+		plugin.settings!.OllamaConnection.ollamaParameters.mirostat_eta = frontmatter.ollama_mirostat_eta;
+		plugin.settings!.OllamaConnection.ollamaParameters.mirostat_tau = frontmatter.ollama_mirostat_tau;
+		plugin.settings!.OllamaConnection.ollamaParameters.num_ctx = frontmatter.ollama_num_ctx;
+		plugin.settings!.OllamaConnection.ollamaParameters.num_gqa = frontmatter.ollama_num_gqa;
+		plugin.settings!.OllamaConnection.ollamaParameters.num_thread = frontmatter.ollama_num_thread;
+		plugin.settings!.OllamaConnection.ollamaParameters.repeat_last_n = frontmatter.ollama_repeat_last_n;
+		plugin.settings!.OllamaConnection.ollamaParameters.repeat_penalty = frontmatter.ollama_repeat_penalty;
+		plugin.settings!.OllamaConnection.ollamaParameters.seed = frontmatter.ollama_seed;
+		plugin.settings!.OllamaConnection.ollamaParameters.stop = frontmatter.ollama_stop;
+		plugin.settings!.OllamaConnection.ollamaParameters.tfs_z = frontmatter.ollama_tfs_z;
+		plugin.settings!.OllamaConnection.ollamaParameters.top_k = frontmatter.ollama_top_k;
+		plugin.settings!.OllamaConnection.ollamaParameters.top_p = frontmatter.ollama_top_p;
+		plugin.settings!.OllamaConnection.ollamaParameters.keep_alive = frontmatter.ollama_keep_alive;
 	};
 
 	// Optional: Specify data write options
@@ -560,49 +347,49 @@ export async function updateSettingsFromFrontMatter(plugin: MAXGPT, file: TFile)
 	try {
 		await plugin.app.fileManager.processFrontMatter(file, updateSettings, writeOptions);
 		const fileContent = (await plugin.app.vault.read(file)).replace(/^---\s*[\s\S]*?---/, '').trim();
-		plugin.settings.general.system_role = fileContent;
+		plugin.settings!.general.system_role = fileContent;
 		updateProfile(plugin, file);
 	} catch (error) {
 		console.error('Error processing frontmatter:', error);
 	}
 }
 
-export async function updateFrontMatter(plugin: MAXGPT, file: TFile) {
+export async function updateFrontMatter(plugin: MAXPlugin, file: TFile) {
 	// Define a callback function to modify the frontmatter
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const modifyFrontMatter = async (frontmatter: any) => {
 		// Add or modify properties in the frontmatter
-		frontmatter.model = plugin.settings.general.model;
-		frontmatter.max_tokens = parseInt(plugin.settings.general.max_tokens);
-		frontmatter.temperature = parseFloat(plugin.settings.general.temperature);
-		frontmatter.reference_current_note = plugin.settings.general.allowReferenceCurrentNote;
-		frontmatter.prompt = plugin.settings.prompts.prompt.replace('.md', '');
-		frontmatter.user_name = plugin.settings.appearance.userName;
-		// frontmatter.chatbot_name = plugin.settings.appearance.chatbotName;
-		frontmatter.allow_header = plugin.settings.appearance.allowHeader;
-		frontmatter.chatbot_container_background_color = plugin.settings.appearance.chatbotContainerBackgroundColor.replace(/^#/, '');
-		frontmatter.message_container_background_color = plugin.settings.appearance.messageContainerBackgroundColor.replace(/^#/, '');
-		frontmatter.user_message_font_color = plugin.settings.appearance.userMessageFontColor.replace(/^#/, '');
-		frontmatter.user_message_background_color = plugin.settings.appearance.userMessageBackgroundColor.replace(/^#/, '');
-		frontmatter.bot_message_font_color = plugin.settings.appearance.botMessageFontColor.replace(/^#/, '');
-		frontmatter.chatbot_message_background_color = plugin.settings.appearance.botMessageBackgroundColor.replace(/^#/, '');
-		frontmatter.chatbox_font_color = plugin.settings.appearance.chatBoxFontColor.replace(/^#/, '');
-		frontmatter.chatbox_background_color = plugin.settings.appearance.chatBoxBackgroundColor.replace(/^#/, '');
-		frontmatter.prompt_select_generate_system_role = plugin.settings.editor.prompt_select_generate_system_role;
-		frontmatter.ollama_mirostat = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.mirostat);
-		frontmatter.ollama_mirostat_eta = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.mirostat_eta);
-		frontmatter.ollama_mirostat_tau = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.mirostat_tau);
-		frontmatter.ollama_num_ctx = parseInt(plugin.settings.OllamaConnection.ollamaParameters.num_ctx);
-		frontmatter.ollama_num_gqa = parseInt(plugin.settings.OllamaConnection.ollamaParameters.num_gqa);
-		frontmatter.ollama_num_thread = parseInt(plugin.settings.OllamaConnection.ollamaParameters.num_thread);
-		frontmatter.ollama_repeat_last_n = parseInt(plugin.settings.OllamaConnection.ollamaParameters.repeat_last_n);
-		frontmatter.ollama_repeat_penalty = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.repeat_penalty);
-		frontmatter.ollama_seed = parseInt(plugin.settings.OllamaConnection.ollamaParameters.seed);
-		frontmatter.ollama_stop = plugin.settings.OllamaConnection.ollamaParameters.stop;
-		frontmatter.ollama_tfs_z = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.tfs_z);
-		frontmatter.ollama_top_k = parseInt(plugin.settings.OllamaConnection.ollamaParameters.top_k);
-		frontmatter.ollama_top_p = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.top_p);
-		frontmatter.ollama_keep_alive = plugin.settings.OllamaConnection.ollamaParameters.keep_alive;
+		frontmatter.model = plugin.settings!.general.model;
+		frontmatter.max_tokens = parseInt(plugin.settings!.general.max_tokens);
+		frontmatter.temperature = parseFloat(plugin.settings!.general.temperature);
+		frontmatter.reference_current_note = plugin.settings!.general.allowReferenceCurrentNote;
+		frontmatter.prompt = plugin.settings!.prompts.prompt.replace('.md', '');
+		frontmatter.user_name = plugin.settings!.appearance.userName;
+		// frontmatter.chatbot_name = plugin.settings!.appearance.chatbotName;
+		frontmatter.allow_header = plugin.settings!.appearance.allowHeader;
+		frontmatter.chatbot_container_background_color = plugin.settings!.appearance.chatbotContainerBackgroundColor.replace(/^#/, '');
+		frontmatter.message_container_background_color = plugin.settings!.appearance.messageContainerBackgroundColor.replace(/^#/, '');
+		frontmatter.user_message_font_color = plugin.settings!.appearance.userMessageFontColor.replace(/^#/, '');
+		frontmatter.user_message_background_color = plugin.settings!.appearance.userMessageBackgroundColor.replace(/^#/, '');
+		frontmatter.bot_message_font_color = plugin.settings!.appearance.botMessageFontColor.replace(/^#/, '');
+		frontmatter.chatbot_message_background_color = plugin.settings!.appearance.botMessageBackgroundColor.replace(/^#/, '');
+		frontmatter.chatbox_font_color = plugin.settings!.appearance.chatBoxFontColor.replace(/^#/, '');
+		frontmatter.chatbox_background_color = plugin.settings!.appearance.chatBoxBackgroundColor.replace(/^#/, '');
+		frontmatter.prompt_select_generate_system_role = plugin.settings!.editor.prompt_select_generate_system_role;
+		frontmatter.ollama_mirostat = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.mirostat);
+		frontmatter.ollama_mirostat_eta = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.mirostat_eta);
+		frontmatter.ollama_mirostat_tau = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.mirostat_tau);
+		frontmatter.ollama_num_ctx = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.num_ctx);
+		frontmatter.ollama_num_gqa = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.num_gqa);
+		frontmatter.ollama_num_thread = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.num_thread);
+		frontmatter.ollama_repeat_last_n = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.repeat_last_n);
+		frontmatter.ollama_repeat_penalty = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.repeat_penalty);
+		frontmatter.ollama_seed = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.seed);
+		frontmatter.ollama_stop = plugin.settings!.OllamaConnection.ollamaParameters.stop;
+		frontmatter.ollama_tfs_z = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.tfs_z);
+		frontmatter.ollama_top_k = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.top_k);
+		frontmatter.ollama_top_p = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.top_p);
+		frontmatter.ollama_keep_alive = plugin.settings!.OllamaConnection.ollamaParameters.keep_alive;
 	};
 
 	// Optional: Specify data write options
@@ -618,22 +405,22 @@ export async function updateFrontMatter(plugin: MAXGPT, file: TFile) {
 	}
 }
 
-export async function updateProfile(plugin: MAXGPT, file: TFile) {
+export async function updateProfile(plugin: MAXPlugin, file: TFile) {
 	try {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		await plugin.app.fileManager.processFrontMatter(file, (frontmatter: any) => {
-			plugin.settings.general.model = frontmatter.model || DEFAULT_SETTINGS.general.model;
+			plugin.settings!.general.model = frontmatter.model || DEFAULT_SETTINGS.general.model;
 
 			const modelName = document.querySelector('#modelName');
 			if (modelName) {
-				modelName.textContent = `Model: ${plugin.settings.general.model}`;
+				modelName.textContent = `Model: ${plugin.settings!.general.model}`;
 			}
 
 			if (frontmatter.max_tokens) {
-				plugin.settings.general.max_tokens = frontmatter.max_tokens.toString();
-				frontmatter.max_tokens = parseInt(plugin.settings.general.max_tokens);
+				plugin.settings!.general.max_tokens = frontmatter.max_tokens.toString();
+				frontmatter.max_tokens = parseInt(plugin.settings!.general.max_tokens);
 			} else {
-				plugin.settings.general.max_tokens = DEFAULT_SETTINGS.general.max_tokens;
+				plugin.settings!.general.max_tokens = DEFAULT_SETTINGS.general.max_tokens;
 			}
 
 			if (frontmatter.temperature) {
@@ -642,15 +429,15 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 				} else if (frontmatter.temperature > 2) {
 					frontmatter.temperature = '2.00';
 				} else {
-					plugin.settings.general.temperature = parseFloat(frontmatter.temperature).toFixed(2).toString();
-					frontmatter.temperature = parseFloat(plugin.settings.general.temperature);
+					plugin.settings!.general.temperature = parseFloat(frontmatter.temperature).toFixed(2).toString();
+					frontmatter.temperature = parseFloat(plugin.settings!.general.temperature);
 				}
 			} else {
-				plugin.settings.general.temperature = DEFAULT_SETTINGS.general.temperature;
+				plugin.settings!.general.temperature = DEFAULT_SETTINGS.general.temperature;
 				frontmatter.temperature = DEFAULT_SETTINGS.general.temperature;
 			}
 
-			plugin.settings.general.allowReferenceCurrentNote = frontmatter.reference_current_note;
+			plugin.settings!.general.allowReferenceCurrentNote = frontmatter.reference_current_note;
 
 			const referenceCurrentNoteElement = document.getElementById('referenceCurrentNote') as HTMLElement;
 			if (referenceCurrentNoteElement) {
@@ -662,50 +449,50 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 			}
 
 			if (frontmatter.prompt && frontmatter.prompt !== '') {
-				plugin.settings.prompts.prompt = `${frontmatter.prompt}.md`;
+				plugin.settings!.prompts.prompt = `${frontmatter.prompt}.md`;
 			} else {
-				plugin.settings.prompts.prompt = DEFAULT_SETTINGS.prompts.prompt;
+				plugin.settings!.prompts.prompt = DEFAULT_SETTINGS.prompts.prompt;
 			}
 
 			if (frontmatter.user_name) {
-				plugin.settings.appearance.userName = frontmatter.user_name.substring(0, 30);
+				plugin.settings!.appearance.userName = frontmatter.user_name.substring(0, 30);
 			} else {
-				plugin.settings.appearance.userName = DEFAULT_SETTINGS.appearance.userName;
+				plugin.settings!.appearance.userName = DEFAULT_SETTINGS.appearance.userName;
 			}
-			frontmatter.user_name = plugin.settings.appearance.userName;
+			frontmatter.user_name = plugin.settings!.appearance.userName;
 
 			const userNames = document.querySelectorAll('.userName') as NodeListOf<HTMLHeadingElement>;
 			userNames.forEach(userName => {
-				userName.textContent = plugin.settings.appearance.userName;
+				userName.textContent = plugin.settings!.appearance.userName;
 			});
 
 			// if (frontmatter.chatbot_name) {
-			// plugin.settings.appearance.chatbotName = frontmatter.chatbot_name.toUpperCase().substring(0, 30);
+			// plugin.settings!.appearance.chatbotName = frontmatter.chatbot_name.toUpperCase().substring(0, 30);
 			// } else {
-			// 	plugin.settings.appearance.chatbotName = DEFAULT_SETTINGS.appearance.chatbotName;
+			// 	plugin.settings!.appearance.chatbotName = DEFAULT_SETTINGS.appearance.chatbotName;
 			// }
-			// frontmatter.chatbot_name = plugin.settings.appearance.chatbotName;
+			// frontmatter.chatbot_name = plugin.settings!.appearance.chatbotName;
 
 			const chatbotNameHeading = document.querySelector('#chatbotNameHeading') as HTMLHeadingElement;
 			const chatbotNames = document.querySelectorAll('.chatbotName') as NodeListOf<HTMLHeadingElement>;
 			if (chatbotNameHeading) {
-				chatbotNameHeading.textContent = plugin.settings.appearance.chatbotName;
+				chatbotNameHeading.textContent = plugin.settings!.appearance.chatbotName;
 			}
 			chatbotNames.forEach(chatbotName => {
-				chatbotName.textContent = plugin.settings.appearance.chatbotName;
+				chatbotName.textContent = plugin.settings!.appearance.chatbotName;
 			});
 
 			const chatbotContainer = document.querySelector('.chatbotContainer') as HTMLElement;
 			const messageContainer = document.querySelector('#messageContainer') as HTMLElement;
 
 			if (isValidHexColor(frontmatter.chatbot_container_background_color)) {
-				plugin.settings.appearance.chatbotContainerBackgroundColor = `#${frontmatter.chatbot_container_background_color.substring(0, 6)}`;
+				plugin.settings!.appearance.chatbotContainerBackgroundColor = `#${frontmatter.chatbot_container_background_color.substring(0, 6)}`;
 				if (chatbotContainer) {
-					chatbotContainer.style.backgroundColor = plugin.settings.appearance.chatbotContainerBackgroundColor;
+					chatbotContainer.style.backgroundColor = plugin.settings!.appearance.chatbotContainerBackgroundColor;
 				}
 			} else {
-				plugin.settings.appearance.chatbotContainerBackgroundColor = colorToHex(DEFAULT_SETTINGS.appearance.chatbotContainerBackgroundColor);
-				frontmatter.chatbot_container_background_color = plugin.settings.appearance.chatbotContainerBackgroundColor.replace(/^#/, '');
+				plugin.settings!.appearance.chatbotContainerBackgroundColor = colorToHex(DEFAULT_SETTINGS.appearance.chatbotContainerBackgroundColor);
+				frontmatter.chatbot_container_background_color = plugin.settings!.appearance.chatbotContainerBackgroundColor.replace(/^#/, '');
 				if (chatbotContainer) {
 					const defaultChatbotContainerBackgroundColor = getComputedStyle(document.body)
 						.getPropertyValue(DEFAULT_SETTINGS.appearance.chatbotContainerBackgroundColor)
@@ -715,13 +502,13 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 			}
 
 			if (isValidHexColor(frontmatter.message_container_background_color)) {
-				plugin.settings.appearance.messageContainerBackgroundColor = `#${frontmatter.message_container_background_color.substring(0, 6)}`;
+				plugin.settings!.appearance.messageContainerBackgroundColor = `#${frontmatter.message_container_background_color.substring(0, 6)}`;
 				if (messageContainer) {
-					messageContainer.style.backgroundColor = plugin.settings.appearance.messageContainerBackgroundColor;
+					messageContainer.style.backgroundColor = plugin.settings!.appearance.messageContainerBackgroundColor;
 				}
 			} else {
-				plugin.settings.appearance.messageContainerBackgroundColor = colorToHex(DEFAULT_SETTINGS.appearance.messageContainerBackgroundColor);
-				frontmatter.message_container_background_color = plugin.settings.appearance.messageContainerBackgroundColor.replace(/^#/, '');
+				plugin.settings!.appearance.messageContainerBackgroundColor = colorToHex(DEFAULT_SETTINGS.appearance.messageContainerBackgroundColor);
+				frontmatter.message_container_background_color = plugin.settings!.appearance.messageContainerBackgroundColor.replace(/^#/, '');
 				if (messageContainer) {
 					const defaultMessageContainerBackgroundColor = getComputedStyle(document.body)
 						.getPropertyValue(DEFAULT_SETTINGS.appearance.messageContainerBackgroundColor)
@@ -731,17 +518,17 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 			}
 
 			if (isValidHexColor(frontmatter.user_message_font_color)) {
-				plugin.settings.appearance.userMessageFontColor = `#${frontmatter.user_message_font_color.substring(0, 6)}`;
+				plugin.settings!.appearance.userMessageFontColor = `#${frontmatter.user_message_font_color.substring(0, 6)}`;
 				if (messageContainer) {
 					const userMessages = messageContainer.querySelectorAll('.userMessage');
 					userMessages.forEach(userMessage => {
 						const element = userMessage as HTMLElement;
-						element.style.color = plugin.settings.appearance.userMessageFontColor;
+						element.style.color = plugin.settings!.appearance.userMessageFontColor;
 					});
 				}
 			} else {
-				plugin.settings.appearance.userMessageFontColor = colorToHex(DEFAULT_SETTINGS.appearance.userMessageFontColor);
-				frontmatter.user_message_font_color = plugin.settings.appearance.userMessageFontColor.replace(/^#/, '');
+				plugin.settings!.appearance.userMessageFontColor = colorToHex(DEFAULT_SETTINGS.appearance.userMessageFontColor);
+				frontmatter.user_message_font_color = plugin.settings!.appearance.userMessageFontColor.replace(/^#/, '');
 				if (messageContainer) {
 					const userMessages = messageContainer.querySelectorAll('.userMessage');
 					userMessages.forEach(userMessage => {
@@ -755,17 +542,17 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 			}
 
 			if (isValidHexColor(frontmatter.user_message_background_color)) {
-				plugin.settings.appearance.userMessageBackgroundColor = `#${frontmatter.user_message_background_color.substring(0, 6)}`;
+				plugin.settings!.appearance.userMessageBackgroundColor = `#${frontmatter.user_message_background_color.substring(0, 6)}`;
 				if (messageContainer) {
 					const userMessages = messageContainer.querySelectorAll('.userMessage');
 					userMessages.forEach(userMessage => {
 						const element = userMessage as HTMLElement;
-						element.style.backgroundColor = plugin.settings.appearance.userMessageBackgroundColor;
+						element.style.backgroundColor = plugin.settings!.appearance.userMessageBackgroundColor;
 					});
 				}
 			} else {
-				plugin.settings.appearance.userMessageBackgroundColor = colorToHex(DEFAULT_SETTINGS.appearance.userMessageBackgroundColor);
-				frontmatter.user_message_background_color = plugin.settings.appearance.userMessageBackgroundColor.replace(/^#/, '');
+				plugin.settings!.appearance.userMessageBackgroundColor = colorToHex(DEFAULT_SETTINGS.appearance.userMessageBackgroundColor);
+				frontmatter.user_message_background_color = plugin.settings!.appearance.userMessageBackgroundColor.replace(/^#/, '');
 				if (messageContainer) {
 					const userMessages = messageContainer.querySelectorAll('.userMessage');
 					userMessages.forEach(userMessage => {
@@ -779,17 +566,17 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 			}
 
 			if (isValidHexColor(frontmatter.bot_message_font_color)) {
-				plugin.settings.appearance.botMessageFontColor = `#${frontmatter.bot_message_font_color.substring(0, 6)}`;
+				plugin.settings!.appearance.botMessageFontColor = `#${frontmatter.bot_message_font_color.substring(0, 6)}`;
 				if (messageContainer) {
 					const botMessages = messageContainer.querySelectorAll('.botMessage');
 					botMessages.forEach(botMessage => {
 						const element = botMessage as HTMLElement;
-						element.style.color = plugin.settings.appearance.botMessageFontColor;
+						element.style.color = plugin.settings!.appearance.botMessageFontColor;
 					});
 				}
 			} else {
-				plugin.settings.appearance.botMessageFontColor = colorToHex(DEFAULT_SETTINGS.appearance.botMessageFontColor);
-				frontmatter.bot_message_font_color = plugin.settings.appearance.botMessageFontColor.replace(/^#/, '');
+				plugin.settings!.appearance.botMessageFontColor = colorToHex(DEFAULT_SETTINGS.appearance.botMessageFontColor);
+				frontmatter.bot_message_font_color = plugin.settings!.appearance.botMessageFontColor.replace(/^#/, '');
 				if (messageContainer) {
 					const botMessages = messageContainer.querySelectorAll('.botMessage');
 					botMessages.forEach(botMessage => {
@@ -803,17 +590,17 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 			}
 
 			if (isValidHexColor(frontmatter.chatbot_message_background_color)) {
-				plugin.settings.appearance.botMessageBackgroundColor = `#${frontmatter.chatbot_message_background_color.substring(0, 6)}`;
+				plugin.settings!.appearance.botMessageBackgroundColor = `#${frontmatter.chatbot_message_background_color.substring(0, 6)}`;
 				if (messageContainer) {
 					const botMessages = messageContainer.querySelectorAll('.botMessage');
 					botMessages.forEach(botMessage => {
 						const element = botMessage as HTMLElement;
-						element.style.backgroundColor = plugin.settings.appearance.botMessageBackgroundColor;
+						element.style.backgroundColor = plugin.settings!.appearance.botMessageBackgroundColor;
 					});
 				}
 			} else {
-				plugin.settings.appearance.botMessageBackgroundColor = colorToHex(DEFAULT_SETTINGS.appearance.botMessageBackgroundColor);
-				frontmatter.chatbot_message_background_color = plugin.settings.appearance.botMessageBackgroundColor.replace(/^#/, '');
+				plugin.settings!.appearance.botMessageBackgroundColor = colorToHex(DEFAULT_SETTINGS.appearance.botMessageBackgroundColor);
+				frontmatter.chatbot_message_background_color = plugin.settings!.appearance.botMessageBackgroundColor.replace(/^#/, '');
 				if (messageContainer) {
 					const botMessages = messageContainer.querySelectorAll('.botMessage');
 					botMessages.forEach(botMessage => {
@@ -827,23 +614,23 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 			}
 
 			if (isValidHexColor(frontmatter.chatbox_font_color)) {
-				plugin.settings.appearance.chatBoxFontColor = `#${frontmatter.chatbox_font_color.substring(0, 6)}`;
+				plugin.settings!.appearance.chatBoxFontColor = `#${frontmatter.chatbox_font_color.substring(0, 6)}`;
 				const textarea = document.querySelector('.chatbox textarea') as HTMLElement;
 				if (textarea) {
-					textarea.style.color = plugin.settings.appearance.chatBoxFontColor;
+					textarea.style.color = plugin.settings!.appearance.chatBoxFontColor;
 
 					// Set the placeholder color to the default value
 					const style = document.createElement('style');
 					style.textContent = `
 						.chatbox textarea::placeholder {
-							color: ${plugin.settings.appearance.chatBoxFontColor} !important;
+							color: ${plugin.settings!.appearance.chatBoxFontColor} !important;
 						}
 					`;
 					textarea.appendChild(style);
 				}
 			} else {
-				plugin.settings.appearance.chatBoxFontColor = colorToHex(DEFAULT_SETTINGS.appearance.chatBoxFontColor);
-				frontmatter.chatbox_font_color = plugin.settings.appearance.chatBoxFontColor.replace(/^#/, '');
+				plugin.settings!.appearance.chatBoxFontColor = colorToHex(DEFAULT_SETTINGS.appearance.chatBoxFontColor);
+				frontmatter.chatbox_font_color = plugin.settings!.appearance.chatBoxFontColor.replace(/^#/, '');
 				const textarea = document.querySelector('.chatbox textarea') as HTMLTextAreaElement;
 				const defaultChatBoxFontColor = getComputedStyle(document.body).getPropertyValue(DEFAULT_SETTINGS.appearance.chatBoxFontColor).trim();
 
@@ -862,25 +649,25 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 			}
 
 			if (isValidHexColor(frontmatter.chatbox_background_color)) {
-				plugin.settings.appearance.chatBoxBackgroundColor = `#${frontmatter.chatbox_background_color.substring(0, 6)}`;
+				plugin.settings!.appearance.chatBoxBackgroundColor = `#${frontmatter.chatbox_background_color.substring(0, 6)}`;
 
 				if (messageContainer) {
 					const chatbox = document.querySelector('.chatbox');
 					if (chatbox) {
 						const element = chatbox as HTMLElement;
-						element.style.backgroundColor = plugin.settings.appearance.chatBoxBackgroundColor;
-						element.style.borderColor = plugin.settings.appearance.chatBoxBackgroundColor;
+						element.style.backgroundColor = plugin.settings!.appearance.chatBoxBackgroundColor;
+						element.style.borderColor = plugin.settings!.appearance.chatBoxBackgroundColor;
 					}
 
 					const textarea = document.querySelector('.chatbox textarea');
 					if (textarea) {
 						const element = textarea as HTMLElement;
-						element.style.backgroundColor = plugin.settings.appearance.chatBoxBackgroundColor;
-						element.style.borderColor = plugin.settings.appearance.chatBoxBackgroundColor;
+						element.style.backgroundColor = plugin.settings!.appearance.chatBoxBackgroundColor;
+						element.style.borderColor = plugin.settings!.appearance.chatBoxBackgroundColor;
 					}
 				}
 			} else {
-				plugin.settings.appearance.chatBoxBackgroundColor = DEFAULT_SETTINGS.appearance.chatBoxBackgroundColor;
+				plugin.settings!.appearance.chatBoxBackgroundColor = DEFAULT_SETTINGS.appearance.chatBoxBackgroundColor;
 				frontmatter.chatbox_background_color = DEFAULT_SETTINGS.appearance.chatBoxBackgroundColor.replace(/^#/, '');
 
 				const defaultChatBoxBackgroundColor = getComputedStyle(document.body)
@@ -906,9 +693,9 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 				}
 			}
 
-			plugin.settings.editor.prompt_select_generate_system_role = frontmatter.prompt_select_generate_system_role;
+			plugin.settings!.editor.prompt_select_generate_system_role = frontmatter.prompt_select_generate_system_role;
 
-			plugin.settings.appearance.allowHeader = frontmatter.allow_header;
+			plugin.settings!.appearance.allowHeader = frontmatter.allow_header;
 			if (frontmatter.allow_header === true) {
 				const header = document.querySelector('#header') as HTMLElement;
 
@@ -930,98 +717,98 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 
 			// Check if the parsed value is a valid integer, if not, fallback to the default URL
 			if (isNaN(intValue)) {
-				plugin.settings.OllamaConnection.ollamaParameters.mirostat = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat;
-				frontmatter.ollama_mirostat = plugin.settings.OllamaConnection.ollamaParameters.mirostat;
+				plugin.settings!.OllamaConnection.ollamaParameters.mirostat = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat;
+				frontmatter.ollama_mirostat = plugin.settings!.OllamaConnection.ollamaParameters.mirostat;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.mirostat = intValue.toString();
+				plugin.settings!.OllamaConnection.ollamaParameters.mirostat = intValue.toString();
 				frontmatter.ollama_mirostat = intValue;
 			}
 
 			if (isNaN(parseFloat(frontmatter.ollama_mirostat_eta))) {
-				plugin.settings.OllamaConnection.ollamaParameters.mirostat_eta = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_eta;
-				frontmatter.ollama_mirostat_eta = plugin.settings.OllamaConnection.ollamaParameters.mirostat_eta;
+				plugin.settings!.OllamaConnection.ollamaParameters.mirostat_eta = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_eta;
+				frontmatter.ollama_mirostat_eta = plugin.settings!.OllamaConnection.ollamaParameters.mirostat_eta;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.mirostat_eta = parseFloat(frontmatter.ollama_mirostat_eta).toFixed(2).toString();
-				frontmatter.ollama_mirostat_eta = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.mirostat_eta);
+				plugin.settings!.OllamaConnection.ollamaParameters.mirostat_eta = parseFloat(frontmatter.ollama_mirostat_eta).toFixed(2).toString();
+				frontmatter.ollama_mirostat_eta = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.mirostat_eta);
 			}
 
 			if (isNaN(parseFloat(frontmatter.ollama_mirostat_tau))) {
-				plugin.settings.OllamaConnection.ollamaParameters.mirostat_tau = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_tau;
-				frontmatter.ollama_mirostat_tau = plugin.settings.OllamaConnection.ollamaParameters.mirostat_tau;
+				plugin.settings!.OllamaConnection.ollamaParameters.mirostat_tau = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.mirostat_tau;
+				frontmatter.ollama_mirostat_tau = plugin.settings!.OllamaConnection.ollamaParameters.mirostat_tau;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.mirostat_tau = parseFloat(frontmatter.ollama_mirostat_tau).toFixed(2).toString();
-				frontmatter.ollama_mirostat_tau = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.mirostat_tau);
+				plugin.settings!.OllamaConnection.ollamaParameters.mirostat_tau = parseFloat(frontmatter.ollama_mirostat_tau).toFixed(2).toString();
+				frontmatter.ollama_mirostat_tau = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.mirostat_tau);
 			}
 
 			if (isNaN(parseInt(frontmatter.ollama_num_ctx))) {
-				plugin.settings.OllamaConnection.ollamaParameters.num_ctx = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_ctx;
-				frontmatter.ollama_num_ctx = plugin.settings.OllamaConnection.ollamaParameters.num_ctx;
+				plugin.settings!.OllamaConnection.ollamaParameters.num_ctx = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_ctx;
+				frontmatter.ollama_num_ctx = plugin.settings!.OllamaConnection.ollamaParameters.num_ctx;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.num_ctx = parseInt(frontmatter.ollama_num_ctx).toString();
-				frontmatter.ollama_num_ctx = parseInt(plugin.settings.OllamaConnection.ollamaParameters.num_ctx);
+				plugin.settings!.OllamaConnection.ollamaParameters.num_ctx = parseInt(frontmatter.ollama_num_ctx).toString();
+				frontmatter.ollama_num_ctx = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.num_ctx);
 			}
 
 			if (isNaN(parseInt(frontmatter.ollama_num_gqa))) {
-				plugin.settings.OllamaConnection.ollamaParameters.num_gqa = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_gqa;
+				plugin.settings!.OllamaConnection.ollamaParameters.num_gqa = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_gqa;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.num_gqa = parseInt(frontmatter.ollama_num_gqa).toString();
-				frontmatter.ollama_num_gqa = parseInt(plugin.settings.OllamaConnection.ollamaParameters.num_gqa);
+				plugin.settings!.OllamaConnection.ollamaParameters.num_gqa = parseInt(frontmatter.ollama_num_gqa).toString();
+				frontmatter.ollama_num_gqa = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.num_gqa);
 			}
 
 			if (isNaN(parseInt(frontmatter.ollama_num_thread))) {
-				plugin.settings.OllamaConnection.ollamaParameters.num_thread = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_thread;
+				plugin.settings!.OllamaConnection.ollamaParameters.num_thread = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.num_thread;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.num_thread = parseInt(frontmatter.ollama_num_thread).toString();
-				frontmatter.ollama_num_thread = parseInt(plugin.settings.OllamaConnection.ollamaParameters.num_thread);
+				plugin.settings!.OllamaConnection.ollamaParameters.num_thread = parseInt(frontmatter.ollama_num_thread).toString();
+				frontmatter.ollama_num_thread = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.num_thread);
 			}
 
 			if (isNaN(parseInt(frontmatter.ollama_repeat_last_n))) {
-				plugin.settings.OllamaConnection.ollamaParameters.repeat_last_n = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_last_n;
-				frontmatter.ollama_repeat_last_n = plugin.settings.OllamaConnection.ollamaParameters.repeat_last_n;
+				plugin.settings!.OllamaConnection.ollamaParameters.repeat_last_n = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_last_n;
+				frontmatter.ollama_repeat_last_n = plugin.settings!.OllamaConnection.ollamaParameters.repeat_last_n;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.repeat_last_n = parseInt(frontmatter.ollama_repeat_last_n).toString();
-				frontmatter.ollama_repeat_last_n = parseInt(plugin.settings.OllamaConnection.ollamaParameters.repeat_last_n);
+				plugin.settings!.OllamaConnection.ollamaParameters.repeat_last_n = parseInt(frontmatter.ollama_repeat_last_n).toString();
+				frontmatter.ollama_repeat_last_n = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.repeat_last_n);
 			}
 
 			if (isNaN(parseFloat(frontmatter.ollama_repeat_penalty))) {
-				plugin.settings.OllamaConnection.ollamaParameters.repeat_penalty = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_penalty;
-				frontmatter.ollama_repeat_penalty = plugin.settings.OllamaConnection.ollamaParameters.repeat_penalty;
+				plugin.settings!.OllamaConnection.ollamaParameters.repeat_penalty = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.repeat_penalty;
+				frontmatter.ollama_repeat_penalty = plugin.settings!.OllamaConnection.ollamaParameters.repeat_penalty;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.repeat_penalty = parseFloat(frontmatter.ollama_repeat_penalty).toFixed(2).toString();
-				frontmatter.ollama_repeat_penalty = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.repeat_penalty);
+				plugin.settings!.OllamaConnection.ollamaParameters.repeat_penalty = parseFloat(frontmatter.ollama_repeat_penalty).toFixed(2).toString();
+				frontmatter.ollama_repeat_penalty = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.repeat_penalty);
 			}
 
 			if (isNaN(parseInt(frontmatter.ollama_seed))) {
-				plugin.settings.OllamaConnection.ollamaParameters.seed = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.seed;
+				plugin.settings!.OllamaConnection.ollamaParameters.seed = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.seed;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.seed = parseInt(frontmatter.ollama_seed).toString();
-				frontmatter.ollama_seed = parseInt(plugin.settings.OllamaConnection.ollamaParameters.seed);
+				plugin.settings!.OllamaConnection.ollamaParameters.seed = parseInt(frontmatter.ollama_seed).toString();
+				frontmatter.ollama_seed = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.seed);
 			}
 
-			plugin.settings.OllamaConnection.ollamaParameters.stop = frontmatter.ollama_stop;
+			plugin.settings!.OllamaConnection.ollamaParameters.stop = frontmatter.ollama_stop;
 
 			if (isNaN(parseFloat(frontmatter.ollama_tfs_z))) {
-				plugin.settings.OllamaConnection.ollamaParameters.tfs_z = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.tfs_z;
-				frontmatter.ollama_tfs_z = plugin.settings.OllamaConnection.ollamaParameters.tfs_z;
+				plugin.settings!.OllamaConnection.ollamaParameters.tfs_z = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.tfs_z;
+				frontmatter.ollama_tfs_z = plugin.settings!.OllamaConnection.ollamaParameters.tfs_z;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.tfs_z = parseFloat(frontmatter.ollama_tfs_z).toFixed(2).toString();
-				frontmatter.ollama_tfs_z = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.tfs_z);
+				plugin.settings!.OllamaConnection.ollamaParameters.tfs_z = parseFloat(frontmatter.ollama_tfs_z).toFixed(2).toString();
+				frontmatter.ollama_tfs_z = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.tfs_z);
 			}
 
 			if (isNaN(parseInt(frontmatter.ollama_top_k))) {
-				plugin.settings.OllamaConnection.ollamaParameters.top_k = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_k;
-				frontmatter.ollama_top_k = plugin.settings.OllamaConnection.ollamaParameters.top_k;
+				plugin.settings!.OllamaConnection.ollamaParameters.top_k = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_k;
+				frontmatter.ollama_top_k = plugin.settings!.OllamaConnection.ollamaParameters.top_k;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.top_k = parseInt(frontmatter.ollama_top_k).toString();
-				frontmatter.ollama_top_k = parseInt(plugin.settings.OllamaConnection.ollamaParameters.top_k);
+				plugin.settings!.OllamaConnection.ollamaParameters.top_k = parseInt(frontmatter.ollama_top_k).toString();
+				frontmatter.ollama_top_k = parseInt(plugin.settings!.OllamaConnection.ollamaParameters.top_k);
 			}
 
 			if (isNaN(parseInt(frontmatter.ollama_top_p))) {
-				plugin.settings.OllamaConnection.ollamaParameters.top_p = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_p;
-				frontmatter.ollama_top_p = plugin.settings.OllamaConnection.ollamaParameters.top_p;
+				plugin.settings!.OllamaConnection.ollamaParameters.top_p = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.top_p;
+				frontmatter.ollama_top_p = plugin.settings!.OllamaConnection.ollamaParameters.top_p;
 			} else {
-				plugin.settings.OllamaConnection.ollamaParameters.top_p = parseFloat(frontmatter.ollama_top_p).toFixed(2).toString();
-				frontmatter.ollama_top_p = parseFloat(plugin.settings.OllamaConnection.ollamaParameters.top_p);
+				plugin.settings!.OllamaConnection.ollamaParameters.top_p = parseFloat(frontmatter.ollama_top_p).toFixed(2).toString();
+				frontmatter.ollama_top_p = parseFloat(plugin.settings!.OllamaConnection.ollamaParameters.top_p);
 			}
 
 			// Regular expression to validate the input value and capture the number and unit
@@ -1042,12 +829,12 @@ export async function updateProfile(plugin: MAXGPT, file: TFile) {
 				}
 
 				// Store the value in seconds
-				plugin.settings.OllamaConnection.ollamaParameters.keep_alive = seconds.toString();
-				frontmatter.ollama_keep_alive = plugin.settings.OllamaConnection.ollamaParameters.keep_alive;
+				plugin.settings!.OllamaConnection.ollamaParameters.keep_alive = seconds.toString();
+				frontmatter.ollama_keep_alive = plugin.settings!.OllamaConnection.ollamaParameters.keep_alive;
 			} else {
 				// If the input is invalid, revert to the default setting
-				plugin.settings.OllamaConnection.ollamaParameters.keep_alive = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.keep_alive;
-				frontmatter.ollama_keep_alive = plugin.settings.OllamaConnection.ollamaParameters.keep_alive;
+				plugin.settings!.OllamaConnection.ollamaParameters.keep_alive = DEFAULT_SETTINGS.OllamaConnection.ollamaParameters.keep_alive;
+				frontmatter.ollama_keep_alive = plugin.settings!.OllamaConnection.ollamaParameters.keep_alive;
 			}
 		});
 	} catch (error) {

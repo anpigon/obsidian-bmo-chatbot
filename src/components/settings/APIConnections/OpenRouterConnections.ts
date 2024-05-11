@@ -1,13 +1,13 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import MAXGPT from 'src/main';
+import MAXPlugin from '@/main';
 
-export function addOpenRouterConnectionSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
+export function addOpenRouterConnectionSettings(containerEl: HTMLElement, plugin: MAXPlugin, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
 	toggleSettingContainer.createEl('h2', {text: 'OpenRouter'});
 
-	const initialState = plugin.settings.toggleOpenRouterSettings;
+	const initialState = plugin.settings!.toggleOpenRouterSettings;
 	const chevronIcon = toggleSettingContainer.createEl('span', {
 		cls: 'chevron-icon',
 	});
@@ -23,11 +23,11 @@ export function addOpenRouterConnectionSettings(containerEl: HTMLElement, plugin
 		if (isOpen) {
 			setIcon(chevronIcon, 'chevron-right'); // Close state
 			settingsContainer.style.display = 'none';
-			plugin.settings.toggleOpenRouterSettings = false;
+			plugin.settings!.toggleOpenRouterSettings = false;
 		} else {
 			setIcon(chevronIcon, 'chevron-down'); // Open state
 			settingsContainer.style.display = 'block';
-			plugin.settings.toggleOpenRouterSettings = true;
+			plugin.settings!.toggleOpenRouterSettings = true;
 		}
 		await plugin.saveSettings();
 	});
@@ -39,12 +39,12 @@ export function addOpenRouterConnectionSettings(containerEl: HTMLElement, plugin
 			text
 				.setPlaceholder('insert-api-key')
 				.setValue(
-					plugin.settings.APIConnections.openRouter.APIKey
-						? `${plugin.settings.APIConnections.openRouter.APIKey.slice(0, 6)}-...${plugin.settings.APIConnections.openRouter.APIKey.slice(-4)}`
+					plugin.settings!.APIConnections.openRouter.APIKey
+						? `${plugin.settings!.APIConnections.openRouter.APIKey.slice(0, 6)}-...${plugin.settings!.APIConnections.openRouter.APIKey.slice(-4)}`
 						: ''
 				)
 				.onChange(async value => {
-					plugin.settings.APIConnections.openRouter.APIKey = value;
+					plugin.settings!.APIConnections.openRouter.APIKey = value;
 					await plugin.saveSettings();
 				})
 				.inputEl.addEventListener('focusout', async () => {
@@ -56,8 +56,8 @@ export function addOpenRouterConnectionSettings(containerEl: HTMLElement, plugin
 		.setName('Allow Stream')
 		.setDesc('Allow stream for OpenRouter models.')
 		.addToggle(toggle =>
-			toggle.setValue(plugin.settings.APIConnections.openRouter.allowStream).onChange(value => {
-				plugin.settings.APIConnections.openRouter.allowStream = value;
+			toggle.setValue(plugin.settings!.APIConnections.openRouter.allowStream).onChange(value => {
+				plugin.settings!.APIConnections.openRouter.allowStream = value;
 				plugin.saveSettings();
 			})
 		);
