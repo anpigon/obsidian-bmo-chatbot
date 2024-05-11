@@ -1,7 +1,7 @@
 import {Setting, SettingTab, TFolder, setIcon} from 'obsidian';
-import BMOGPT, {DEFAULT_SETTINGS} from 'src/main';
+import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
 
-export function addChatHistorySettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
+export function addChatHistorySettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
@@ -37,7 +37,7 @@ export function addChatHistorySettings(containerEl: HTMLElement, plugin: BMOGPT,
 		.setDesc('Save your chat history in a specified folder.')
 		.addText(text =>
 			text
-				.setPlaceholder('BMO/History')
+				.setPlaceholder('MAX/History')
 				.setValue(plugin.settings.chatHistory.chatHistoryPath || DEFAULT_SETTINGS.chatHistory.chatHistoryPath)
 				.onChange(async value => {
 					plugin.settings.chatHistory.chatHistoryPath = value ? value : DEFAULT_SETTINGS.chatHistory.chatHistoryPath;
@@ -70,7 +70,7 @@ export function addChatHistorySettings(containerEl: HTMLElement, plugin: BMOGPT,
 		.setDesc('Insert your template file path.')
 		.addText(text =>
 			text
-				.setPlaceholder('templates/bmo.md')
+				.setPlaceholder('templates/max.md')
 				.setValue(plugin.settings.chatHistory.templateFilePath || DEFAULT_SETTINGS.chatHistory.templateFilePath)
 				.onChange(async value => {
 					plugin.settings.chatHistory.templateFilePath = value ? value : DEFAULT_SETTINGS.chatHistory.templateFilePath;

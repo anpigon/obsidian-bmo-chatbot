@@ -1,10 +1,10 @@
 import {requestUrl} from 'obsidian';
-import {BMOSettings} from 'src/main';
+import {MAXSettings} from 'src/main';
 import OpenAI from 'openai';
 
 // Request response from Ollama
 // NOTE: Abort does not work for requestUrl
-export async function fetchOllamaResponseEditor(settings: BMOSettings, selectionString: string) {
+export async function fetchOllamaResponseEditor(settings: MAXSettings, selectionString: string) {
 	const ollamaRESTAPIURL = settings.OllamaConnection.RESTAPIURL;
 
 	if (!ollamaRESTAPIURL) {
@@ -45,7 +45,7 @@ export async function fetchOllamaResponseEditor(settings: BMOSettings, selection
 }
 
 // Request response from openai-based rest api url (editor)
-export async function fetchRESTAPIURLDataEditor(settings: BMOSettings, selectionString: string) {
+export async function fetchRESTAPIURLDataEditor(settings: MAXSettings, selectionString: string) {
 	try {
 		const response = await requestUrl({
 			url: `${settings.RESTAPIURLConnection.RESTAPIURL}/chat/completions`,
@@ -77,7 +77,7 @@ export async function fetchRESTAPIURLDataEditor(settings: BMOSettings, selection
 }
 
 // Fetch Anthropic API Editor
-export async function fetchAnthropicResponseEditor(settings: BMOSettings, selectionString: string) {
+export async function fetchAnthropicResponseEditor(settings: MAXSettings, selectionString: string) {
 	try {
 		const response = await requestUrl({
 			url: 'https://api.anthropic.com/v1/messages',
@@ -104,7 +104,7 @@ export async function fetchAnthropicResponseEditor(settings: BMOSettings, select
 }
 
 // Fetch Google Gemini API Editor
-export async function fetchGoogleGeminiDataEditor(settings: BMOSettings, selectionString: string) {
+export async function fetchGoogleGeminiDataEditor(settings: MAXSettings, selectionString: string) {
 	try {
 		const API_KEY = settings.APIConnections.googleGemini.APIKey;
 
@@ -137,7 +137,7 @@ export async function fetchGoogleGeminiDataEditor(settings: BMOSettings, selecti
 }
 
 // Fetch Mistral API Editor
-export async function fetchMistralDataEditor(settings: BMOSettings, selectionString: string) {
+export async function fetchMistralDataEditor(settings: MAXSettings, selectionString: string) {
 	try {
 		const response = await requestUrl({
 			url: 'https://api.mistral.ai/v1/chat/completions',
@@ -168,7 +168,7 @@ export async function fetchMistralDataEditor(settings: BMOSettings, selectionStr
 }
 
 // Fetch OpenAI-Based API Editor
-export async function fetchOpenAIBaseAPIResponseEditor(settings: BMOSettings, selectionString: string) {
+export async function fetchOpenAIBaseAPIResponseEditor(settings: MAXSettings, selectionString: string) {
 	const openai = new OpenAI({
 		apiKey: settings.APIConnections.openAI.APIKey,
 		baseURL: settings.APIConnections.openAI.openAIBaseUrl,
@@ -192,7 +192,7 @@ export async function fetchOpenAIBaseAPIResponseEditor(settings: BMOSettings, se
 }
 
 // Request response from openai-based rest api url (editor)
-export async function fetchOpenRouterEditor(settings: BMOSettings, selectionString: string) {
+export async function fetchOpenRouterEditor(settings: MAXSettings, selectionString: string) {
 	try {
 		const response = await requestUrl({
 			url: 'https://openrouter.ai/api/v1/chat/completions',

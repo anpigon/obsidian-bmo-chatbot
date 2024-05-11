@@ -1,9 +1,9 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import BMOGPT, {DEFAULT_SETTINGS} from 'src/main';
+import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
 import {addDescriptionLink} from 'src/utils/DescriptionLink';
 
 // OpenAI-Based REST API URL Connection Settings
-export function addRESTAPIURLSettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
+export function addRESTAPIURLSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
@@ -77,7 +77,7 @@ export function addRESTAPIURLSettings(containerEl: HTMLElement, plugin: BMOGPT, 
 		.setDesc(
 			addDescriptionLink(
 				'Allow REST API URL models to stream response. Additional setup required: ',
-				'https://github.com/longy2k/obsidian-bmo-chatbot/wiki/How-to-setup-with-LM-Studio',
+				'https://github.com/longy2k/obsidian-max-chatbot/wiki/How-to-setup-with-LM-Studio',
 				'',
 				'[Instructions]'
 			)

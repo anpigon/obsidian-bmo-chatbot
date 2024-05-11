@@ -1,9 +1,9 @@
 import {filenameMessageHistoryJSON, messageHistory} from 'src/view';
 import {displayAppendButton, displayBotCopyButton, displayBotEditButton} from './Buttons';
-import BMOGPT, {BMOSettings} from 'src/main';
+import MAXGPT, {MAXSettings} from 'src/main';
 
 // Add a new message to the messageHistory array and save it to the file
-export async function addMessage(plugin: BMOGPT, input: string, messageType: 'userMessage' | 'botMessage', settings: BMOSettings, index: number) {
+export async function addMessage(plugin: MAXGPT, input: string, messageType: 'userMessage' | 'botMessage', settings: MAXSettings, index: number) {
 	const messageObj: {role: string; content: string} = {
 		role: '',
 		content: '',

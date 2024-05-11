@@ -1,8 +1,8 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import BMOGPT, {DEFAULT_SETTINGS} from 'src/main';
+import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
 import {addDescriptionLink} from 'src/utils/DescriptionLink';
 
-export async function addEditorSettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
+export async function addEditorSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
@@ -38,7 +38,7 @@ export async function addEditorSettings(containerEl: HTMLElement, plugin: BMOGPT
 		.setDesc(
 			addDescriptionLink(
 				'System role for Prompt Select Generate.',
-				'https://github.com/longy2k/obsidian-bmo-chatbot/wiki/Prompt---Select---Generate-Command',
+				'https://github.com/longy2k/obsidian-max-chatbot/wiki/Prompt---Select---Generate-Command',
 				'',
 				'[Instructions]'
 			)

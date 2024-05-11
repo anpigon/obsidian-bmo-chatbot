@@ -1,5 +1,5 @@
 import {App, PluginSettingTab, TFile} from 'obsidian';
-import BMOGPT, {DEFAULT_SETTINGS, updateSettingsFromFrontMatter} from './main';
+import MAXGPT, {DEFAULT_SETTINGS, updateSettingsFromFrontMatter} from './main';
 import {addGeneralSettings} from './components/settings/GeneralSettings';
 import {addAppearanceSettings} from './components/settings/AppearanceSettings';
 import {addChatHistorySettings} from './components/settings/ChatHistorySettings';
@@ -10,10 +10,10 @@ import {addRESTAPIURLSettings} from './components/settings/RESTAPIURLSettings';
 import {addEditorSettings} from './components/settings/EditorSettings';
 import {addPromptSettings} from './components/settings/PromptSettings';
 
-export class BMOSettingTab extends PluginSettingTab {
-	plugin: BMOGPT;
+export class MAXSettingTab extends PluginSettingTab {
+	plugin: MAXGPT;
 
-	constructor(app: App, plugin: BMOGPT) {
+	constructor(app: App, plugin: MAXGPT) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -23,11 +23,11 @@ export class BMOSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h1', {text: 'BMO Chatbot Settings'});
+		containerEl.createEl('h1', {text: 'MAX Chatbot Settings'});
 
 		const changeLogLink = containerEl.createEl('a', {
 			text: 'Changelog',
-			href: 'https://github.com/longy2k/obsidian-bmo-chatbot/releases',
+			href: 'https://github.com/longy2k/obsidian-max-chatbot/releases',
 		});
 
 		changeLogLink.style.fontSize = '0.8rem';
@@ -80,7 +80,7 @@ export class BMOSettingTab extends PluginSettingTab {
 						// @ts-ignore
 						await this.plugin.app.plugins.enablePlugin(this.plugin.manifest.id);
 					} else {
-						const filenameMessageHistory = `./.obsidian/plugins/bmo-chatbot/data/messageHistory_${defaultProfilePath.name.replace('.md', '.json')}`;
+						const filenameMessageHistory = `./.obsidian/plugins/max-chatbot/data/messageHistory_${defaultProfilePath.name.replace('.md', '.json')}`;
 						this.app.vault.adapter.remove(filenameMessageHistory);
 						this.plugin.app.vault.delete(profilePath);
 						this.plugin.settings.profiles.profile = DEFAULT_SETTINGS.profiles.profile;
@@ -91,11 +91,11 @@ export class BMOSettingTab extends PluginSettingTab {
 
 				requestAnimationFrame(() => {
 					// @ts-ignore
-					const refreshTab = this.plugin.app.setting.openTabById('bmo-chatbot');
+					const refreshTab = this.plugin.app.setting.openTabById('max-chatbot');
 					if (refreshTab) {
 						refreshTab.display();
 					} else {
-						new BMOSettingTab(this.app, this.plugin).display();
+						new MAXSettingTab(this.app, this.plugin).display();
 					}
 				});
 			}

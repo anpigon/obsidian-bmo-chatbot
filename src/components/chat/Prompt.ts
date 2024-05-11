@@ -1,6 +1,6 @@
-import BMOGPT, {BMOSettings} from 'src/main';
+import MAXGPT, {MAXSettings} from 'src/main';
 
-export async function getPrompt(plugin: BMOGPT, settings: BMOSettings) {
+export async function getPrompt(plugin: MAXGPT, settings: MAXSettings) {
 	if (settings.prompts.prompt.trim() === '') {
 		return '';
 	}

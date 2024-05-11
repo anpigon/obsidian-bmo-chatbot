@@ -1,9 +1,9 @@
-import BMOGPT, {BMOSettings} from 'src/main';
+import MAXGPT, {MAXSettings} from 'src/main';
 
 let referenceCurrentNoteContent = '';
 
 // Reference Current Note Indicator
-export async function getActiveFileContent(plugin: BMOGPT, settings: BMOSettings) {
+export async function getActiveFileContent(plugin: MAXGPT, settings: MAXSettings) {
 	const dotElement = document.querySelector('.dotIndicator');
 	referenceCurrentNoteContent = '';
 	if (settings.general.allowReferenceCurrentNote === true) {

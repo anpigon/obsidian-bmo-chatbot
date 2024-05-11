@@ -1,15 +1,15 @@
 import {Notice, TFile} from 'obsidian';
-import {BMOSettings, DEFAULT_SETTINGS, updateSettingsFromFrontMatter} from '../../main';
+import {MAXSettings, DEFAULT_SETTINGS, updateSettingsFromFrontMatter} from '../../main';
 import {colorToHex} from '../../utils/ColorConverter';
 import {filenameMessageHistoryJSON, messageHistory} from '../../view';
-import BMOGPT from '../../main';
+import MAXGPT from '../../main';
 import {getAbortController} from '../FetchModelResponse';
 import {fetchModelRenameTitle} from '../editor/FetchRenameNoteTitle';
 import {displayCommandBotMessage} from './BotMessage';
 import {addMessage} from './Message';
 
 // Commands
-export function executeCommand(input: string, settings: BMOSettings, plugin: BMOGPT) {
+export function executeCommand(input: string, settings: MAXSettings, plugin: MAXGPT) {
 	const command = input.split(' ')[0]; // Get the first word from the input
 
 	switch (command) {
@@ -66,7 +66,7 @@ export function executeCommand(input: string, settings: BMOSettings, plugin: BMO
 }
 
 // Function to create and append a bot message
-export function createBotMessage(settings: BMOSettings): HTMLDivElement {
+export function createBotMessage(settings: MAXSettings): HTMLDivElement {
 	const messageContainer = document.querySelector('#messageContainer');
 	const botMessage = document.createElement('div');
 	botMessage.classList.add('botMessage');
@@ -88,7 +88,7 @@ export function createBotMessage(settings: BMOSettings): HTMLDivElement {
 	return messageBlock;
 }
 
-export async function commandFalse(settings: BMOSettings, plugin: BMOGPT) {
+export async function commandFalse(settings: MAXSettings, plugin: MAXGPT) {
 	const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 	const botMessageDiv = displayCommandBotMessage(plugin, settings, messageHistory, 'Command not recognized.');
 	messageContainer.appendChild(botMessageDiv);
@@ -98,7 +98,7 @@ export async function commandFalse(settings: BMOSettings, plugin: BMOGPT) {
 // =================== COMMAND FUNCTIONS ===================
 
 // `/help` for help commands
-export function commandHelp(plugin: BMOGPT, settings: BMOSettings) {
+export function commandHelp(plugin: MAXGPT, settings: MAXSettings) {
 	const commandBotMessage = `<h2>Commands</h2>
   <p><code>/model [MODEL-NAME] or [VALUE]</code> - List or change model.</p>
   <p><code>/profile [PROFILE-NAME] or [VALUE]</code> - List or change profile.</p>
@@ -118,7 +118,7 @@ export function commandHelp(plugin: BMOGPT, settings: BMOSettings) {
 }
 
 // `/model "[VALUE]"` to change model.
-export async function commandModel(input: string, settings: BMOSettings, plugin: BMOGPT) {
+export async function commandModel(input: string, settings: MAXSettings, plugin: MAXGPT) {
 	const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 	// Check if the user has not specified a model after the "/model" command
 	if (!input.split(' ')[1]) {
@@ -174,7 +174,7 @@ export async function commandModel(input: string, settings: BMOSettings, plugin:
 }
 
 // `/profile "[VALUE]"` to change profile.
-export async function commandProfile(input: string, settings: BMOSettings, plugin: BMOGPT) {
+export async function commandProfile(input: string, settings: MAXSettings, plugin: MAXGPT) {
 	const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 
 	if (!settings.profiles.profileFolderPath) {
@@ -277,7 +277,7 @@ export async function commandProfile(input: string, settings: BMOSettings, plugi
 }
 
 // `/prompt "[VALUE]"` to change prompt.
-export async function commandPrompt(input: string, settings: BMOSettings, plugin: BMOGPT) {
+export async function commandPrompt(input: string, settings: MAXSettings, plugin: MAXGPT) {
 	const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
 
 	if (!settings.prompts.promptFolderPath) {
@@ -386,7 +386,7 @@ export async function commandPrompt(input: string, settings: BMOSettings, plugin
 }
 
 // `/ref` to turn on/off referenceCurrentNote.
-export async function commandReference(input: string, settings: BMOSettings, plugin: BMOGPT) {
+export async function commandReference(input: string, settings: MAXSettings, plugin: MAXGPT) {
 	let commandBotMessage = '';
 	const referenceCurrentNoteElement = document.getElementById('referenceCurrentNote');
 	const inputValue = input.split(' ')[1]?.toLowerCase();
@@ -415,7 +415,7 @@ export async function commandReference(input: string, settings: BMOSettings, plu
 }
 
 // `/temp "VALUE"` to change the temperature.
-export async function commandTemperature(input: string, settings: BMOSettings, plugin: BMOGPT) {
+export async function commandTemperature(input: string, settings: MAXSettings, plugin: MAXGPT) {
 	const inputValue = input.split(' ')[1];
 	const floatValue = parseFloat(inputValue);
 	let temperatureSettingMessage: string;
@@ -443,7 +443,7 @@ export async function commandTemperature(input: string, settings: BMOSettings, p
 }
 
 // `/maxtokens` to change max_tokens.
-export async function commandMaxTokens(input: string, settings: BMOSettings, plugin: BMOGPT) {
+export async function commandMaxTokens(input: string, settings: MAXSettings, plugin: MAXGPT) {
 	let commandBotMessage = '';
 	const commandParts = input.split(' ');
 	const commandAction = commandParts[1] ? commandParts[1].toLowerCase() : '';
@@ -482,7 +482,7 @@ export async function commandMaxTokens(input: string, settings: BMOSettings, plu
 }
 
 // `/system "[VALUE]"` to change system prompt
-// export async function commandSystem(input: string, settings: BMOSettings, plugin: BMOGPT) {
+// export async function commandSystem(input: string, settings: MAXSettings, plugin: MAXGPT) {
 //   let commandBotMessage = '';
 //   const commandParts = input.split(' ');
 //   const commandAction = commandParts[1] ? commandParts[1].toLowerCase() : '';
@@ -517,7 +517,7 @@ export async function commandMaxTokens(input: string, settings: BMOSettings, plu
 // }
 
 // `/append` to append current chat history to current active note.
-export async function commandAppend(plugin: BMOGPT, settings: BMOSettings) {
+export async function commandAppend(plugin: MAXGPT, settings: MAXSettings) {
 	let markdownContent = '';
 
 	const activeFile = plugin.app.workspace.getActiveFile();
@@ -595,7 +595,7 @@ export async function commandAppend(plugin: BMOGPT, settings: BMOSettings) {
 }
 
 // `/save` to save current chat history to a note.
-export async function commandSave(plugin: BMOGPT, settings: BMOSettings) {
+export async function commandSave(plugin: MAXGPT, settings: MAXSettings) {
 	let folderName = settings.chatHistory.chatHistoryPath;
 	// Check if the folder exists, create it if not
 	if (!(await plugin.app.vault.adapter.exists(folderName))) {
@@ -754,7 +754,7 @@ export function commandStop() {
 	}
 }
 
-export async function removeMessageThread(plugin: BMOGPT, index: number) {
+export async function removeMessageThread(plugin: MAXGPT, index: number) {
 	const messageContainer = document.querySelector('#messageContainer');
 
 	const divElements = messageContainer?.querySelectorAll('div.botMessage, div.userMessage');

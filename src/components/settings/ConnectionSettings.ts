@@ -1,12 +1,12 @@
 import {SettingTab, setIcon} from 'obsidian';
-import BMOGPT from 'src/main';
+import MAXGPT from 'src/main';
 import {addOpenAIConnectionSettings} from './APIConnections/OpenAIConnections';
 import {addMistralConnectionSettings} from './APIConnections/MistralConnections';
 import {addGoogleGeminiConnectionSettings} from './APIConnections/GoogleGeminiConnections';
 import {addAnthropicConnectionSettings} from './APIConnections/AnthropicConnections';
 import {addOpenRouterConnectionSettings} from './APIConnections/OpenRouterConnections';
 
-export function addAPIConnectionSettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
+export function addAPIConnectionSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});

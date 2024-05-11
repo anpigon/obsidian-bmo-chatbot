@@ -1,8 +1,8 @@
 import {ColorComponent, Setting, SettingTab, setIcon} from 'obsidian';
-import BMOGPT, {DEFAULT_SETTINGS} from 'src/main';
+import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
 import {colorToHex} from 'src/utils/ColorConverter';
 
-export function addAppearanceSettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
+export function addAppearanceSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});

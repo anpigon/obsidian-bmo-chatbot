@@ -1,10 +1,10 @@
-import BMOGPT, {BMOSettings, DEFAULT_SETTINGS} from 'src/main';
+import MAXGPT, {MAXSettings, DEFAULT_SETTINGS} from 'src/main';
 import {colorToHex} from 'src/utils/ColorConverter';
 import {displayAppendButton, displayBotCopyButton, displayBotEditButton} from './Buttons';
 import {addMessage, addParagraphBreaks} from './Message';
 import {MarkdownRenderer, setIcon} from 'obsidian';
 
-export function displayBotMessage(plugin: BMOGPT, settings: BMOSettings, messageHistory: {role: string; content: string}[], message: string) {
+export function displayBotMessage(plugin: MAXGPT, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
 	const botMessageDiv = document.createElement('div');
 	botMessageDiv.className = 'botMessage';
 
@@ -56,7 +56,7 @@ export function displayBotMessage(plugin: BMOGPT, settings: BMOSettings, message
 	return botMessageDiv;
 }
 
-export function displayLoadingBotMessage(settings: BMOSettings) {
+export function displayLoadingBotMessage(settings: MAXSettings) {
 	const botMessageDiv = document.createElement('div');
 	botMessageDiv.className = 'botMessage';
 	botMessageDiv.style.backgroundColor = colorToHex(
@@ -94,7 +94,7 @@ export function displayLoadingBotMessage(settings: BMOSettings) {
 	return botMessageDiv;
 }
 
-export function displayCommandBotMessage(plugin: BMOGPT, settings: BMOSettings, messageHistory: {role: string; content: string}[], message: string) {
+export function displayCommandBotMessage(plugin: MAXGPT, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
 	const botMessageDiv = document.createElement('div');
 	botMessageDiv.className = 'botMessage';
 	botMessageDiv.style.backgroundColor = colorToHex(
@@ -128,7 +128,7 @@ export function displayCommandBotMessage(plugin: BMOGPT, settings: BMOSettings, 
 	return botMessageDiv;
 }
 
-export function displayErrorBotMessage(plugin: BMOGPT, settings: BMOSettings, messageHistory: {role: string; content: string}[], message: string) {
+export function displayErrorBotMessage(plugin: MAXGPT, settings: MAXSettings, messageHistory: {role: string; content: string}[], message: string) {
 	const botMessageDiv = document.createElement('div');
 	botMessageDiv.className = 'botMessage';
 	botMessageDiv.style.backgroundColor = colorToHex(

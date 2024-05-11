@@ -1,9 +1,9 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import BMOGPT, {DEFAULT_SETTINGS} from 'src/main';
+import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
 import {addDescriptionLink} from 'src/utils/DescriptionLink';
 
 // Ollama Settings
-export function addOllamaSettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
+export function addOllamaSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
@@ -56,7 +56,7 @@ export function addOllamaSettings(containerEl: HTMLElement, plugin: BMOGPT, Sett
 		.setDesc(
 			addDescriptionLink(
 				'Allow Ollama models to stream response. Additional setup required: ',
-				'https://github.com/longy2k/obsidian-bmo-chatbot/wiki/How-to-setup-with-Ollama',
+				'https://github.com/longy2k/obsidian-max-chatbot/wiki/How-to-setup-with-Ollama',
 				'',
 				'[Instructions]'
 			)

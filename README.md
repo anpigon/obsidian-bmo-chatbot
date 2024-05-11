@@ -1,4 +1,4 @@
-# BMO Chatbot for Obsidian
+# MAX Chatbot for Obsidian
 
 Generate and brainstorm ideas while creating your notes using Large Language Models (LLMs) from Ollama, LM Studio, Anthropic, OpenAI, Mistral AI, and more for Obsidian.
 
@@ -12,18 +12,18 @@ Generate and brainstorm ideas while creating your notes using Large Language Mod
 
 ### If you have <v2.0.0, please perform the following instructions:
 
-1. Go to `Options > Community plugins > BMO Chatbot` and uninstall the plugin.
-2. Re-install "BMO Chatbot"
+1. Go to `Options > Community plugins > MAX Chatbot` and uninstall the plugin.
+2. Re-install "MAX Chatbot"
 3. Restart Obsidian or toggle the plugin on/off to refresh.
 
 Or,
 
 1. Go to `Options > Community plugins` and click on the folder's icon:
 
- <img width="775" alt="Screenshot 2024-03-10 at 9 28 38 PM" src="https://github.com/longy2k/obsidian-bmo-chatbot/assets/40724177/62882d8d-77d9-4a46-88fc-4e6a9b1215fc">
+ <img width="775" alt="Screenshot 2024-03-10 at 9 28 38 PM" src="https://github.com/longy2k/obsidian-max-chatbot/assets/40724177/62882d8d-77d9-4a46-88fc-4e6a9b1215fc">
 
 2. Close Obsidian completely.
-3. Find the `bmo-chatbot` folder and delete `data.json`.
+3. Find the `max-chatbot` folder and delete `data.json`.
 4. Restart Obsidian.
 
 ## Features
@@ -43,7 +43,7 @@ If you want to interact with self-hosted Large Language Models (LLMs) using [Oll
 
 Access to other models may require an API key.
 
-Please see [instructions](https://github.com/longy2k/obsidian-bmo-chatbot/wiki) to setup with other LLMs providers.
+Please see [instructions](https://github.com/longy2k/obsidian-max-chatbot/wiki) to setup with other LLMs providers.
 
 Explore some models at [GPT4ALL](https://gpt4all.io/index.html) under the "Model Explorer" section or [Ollama's Library](https://ollama.ai/library).
 
@@ -53,8 +53,8 @@ Three methods:
 
 Obsidian Community plugins (**Recommended**):
 
-1. Search for "BMO Chatbot" in the Obsidian Community plugins.
-2. Enable "BMO Chatbot" in the settings.
+1. Search for "MAX Chatbot" in the Obsidian Community plugins.
+2. Enable "MAX Chatbot" in the settings.
 
 To activate the plugin from this repo:
 
@@ -67,7 +67,7 @@ Install using Beta Reviewers Auto-update Tester ([BRAT](https://github.com/TfTHa
 
 1. Search for "Obsidian42 - BRAT" in the Obsidian Community plugins.
 2. Open the command palette and run the command `BRAT: Add a beta plugin for testing` (If you want the plugin version to be frozen, use the command `BRAT: Add a beta plugin with frozen version based on a release tag`.)
-3. Paste "https://github.com/longy2k/obsidian-bmo-chatbot".
+3. Paste "https://github.com/longy2k/obsidian-max-chatbot".
 4. Click on "Add Plugin".
 5. After BRAT confirms the installation, in Settings go to the Community plugins tab.
 6. Refresh the list of plugins.
@@ -98,7 +98,7 @@ To start using the plugin, enable it in your settings menu and insert an API key
 ## Supported Models
 
 -   Any self-hosted models using [Ollama](https://ollama.ai).
-    -   See [instructions](https://github.com/longy2k/obsidian-bmo-chatbot/wiki) to setup Ollama with Obsidian.
+    -   See [instructions](https://github.com/longy2k/obsidian-max-chatbot/wiki) to setup Ollama with Obsidian.
 -   Any self-hosted models using OpenAI's REST API URL endpoints.
     -   [LM Studio](https://lmstudio.ai/)
     -   [LocalAI](https://github.com/mudler/LocalAI)
@@ -120,7 +120,7 @@ To start using the plugin, enable it in your settings menu and insert an API key
 
 ## Other Notes
 
-"BMO" is a tag name for this project. Inspired by the character "BMO" from Adventure Time.
+"MAX" is a tag name for this project. Inspired by the character "MAX" from Adventure Time.
 
 Be MOre!
 

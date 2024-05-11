@@ -1,8 +1,8 @@
 import {Setting, SettingTab, TFile, TFolder, setIcon} from 'obsidian';
-import BMOGPT, {DEFAULT_SETTINGS} from 'src/main';
+import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
 
 // Prompt Settings
-export function addPromptSettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
+export function addPromptSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
@@ -70,7 +70,7 @@ export function addPromptSettings(containerEl: HTMLElement, plugin: BMOGPT, Sett
 		.setDesc('Select a prompt from a specified folder.')
 		.addText(text =>
 			text
-				.setPlaceholder('BMO/Prompts')
+				.setPlaceholder('MAX/Prompts')
 				.setValue(plugin.settings.prompts.promptFolderPath || DEFAULT_SETTINGS.prompts.promptFolderPath)
 				.onChange(async value => {
 					plugin.settings.prompts.promptFolderPath = value ? value : DEFAULT_SETTINGS.prompts.promptFolderPath;

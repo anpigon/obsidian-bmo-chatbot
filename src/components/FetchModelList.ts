@@ -1,9 +1,9 @@
 import {requestUrl} from 'obsidian';
 import OpenAI from 'openai';
-import BMOGPT from 'src/main';
+import MAXGPT from 'src/main';
 import {OPENAI_MODELS} from 'src/view';
 
-export async function fetchOllamaModels(plugin: BMOGPT) {
+export async function fetchOllamaModels(plugin: MAXGPT) {
 	const ollamaRESTAPIURL = plugin.settings.OllamaConnection.RESTAPIURL;
 
 	// URL Validation
@@ -34,7 +34,7 @@ export async function fetchOllamaModels(plugin: BMOGPT) {
 	}
 }
 
-export async function fetchRESTAPIURLModels(plugin: BMOGPT) {
+export async function fetchRESTAPIURLModels(plugin: MAXGPT) {
 	const RESTAPIURL = plugin.settings.RESTAPIURLConnection.RESTAPIURL;
 
 	// URL Validation
@@ -75,7 +75,7 @@ export async function fetchRESTAPIURLModels(plugin: BMOGPT) {
 
 // Anthropic API models are static. No need to fetch them.
 
-export async function fetchGoogleGeminiModels(plugin: BMOGPT) {
+export async function fetchGoogleGeminiModels(plugin: MAXGPT) {
 	try {
 		const API_KEY = plugin.settings.APIConnections.googleGemini.APIKey;
 
@@ -100,7 +100,7 @@ export async function fetchGoogleGeminiModels(plugin: BMOGPT) {
 	}
 }
 
-export async function fetchMistralModels(plugin: BMOGPT) {
+export async function fetchMistralModels(plugin: MAXGPT) {
 	try {
 		const response = await requestUrl({
 			url: 'https://api.mistral.ai/v1/models',
@@ -122,7 +122,7 @@ export async function fetchMistralModels(plugin: BMOGPT) {
 	}
 }
 
-export async function fetchOpenAIBaseModels(plugin: BMOGPT) {
+export async function fetchOpenAIBaseModels(plugin: MAXGPT) {
 	const openai = new OpenAI({
 		apiKey: plugin.settings.APIConnections.openAI.APIKey,
 		baseURL: plugin.settings.APIConnections.openAI.openAIBaseUrl,
@@ -141,7 +141,7 @@ export async function fetchOpenAIBaseModels(plugin: BMOGPT) {
 	}
 }
 
-export async function fetchOpenRouterModels(plugin: BMOGPT) {
+export async function fetchOpenRouterModels(plugin: MAXGPT) {
 	try {
 		const response = await requestUrl({
 			url: 'https://openrouter.ai/api/v1/models',

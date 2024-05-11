@@ -1,13 +1,13 @@
 import {DataWriteOptions, Plugin, TFile} from 'obsidian';
-import {BMOView, VIEW_TYPE_CHATBOT} from './view';
-import {BMOSettingTab} from './settings';
+import {MAXView, VIEW_TYPE_CHATBOT} from './view';
+import {MAXSettingTab} from './settings';
 import {promptSelectGenerateCommand, renameTitleCommand} from './components/editor/EditorCommands';
 import {colorToHex, isValidHexColor} from './utils/ColorConverter';
 import {DEFAULT_MODEL, OLLAMA_REST_API_URL} from './constants';
 
 import './styles.css';
 
-export interface BMOSettings {
+export interface MAXSettings {
 	profiles: {
 		profile: string;
 		profileFolderPath: string;
@@ -115,10 +115,10 @@ export interface BMOSettings {
 	allModels: string[];
 }
 
-export const DEFAULT_SETTINGS: BMOSettings = {
+export const DEFAULT_SETTINGS: MAXSettings = {
 	profiles: {
-		profile: 'BMO.md',
-		profileFolderPath: 'BMO/Profiles',
+		profile: 'MAX.md',
+		profileFolderPath: 'MAX/Profiles',
 	},
 	general: {
 		model: DEFAULT_MODEL,
@@ -129,7 +129,7 @@ export const DEFAULT_SETTINGS: BMOSettings = {
 	},
 	appearance: {
 		userName: 'USER',
-		chatbotName: 'BMO',
+		chatbotName: 'MAX',
 		chatbotContainerBackgroundColor: '--background-secondary',
 		messageContainerBackgroundColor: '--background-secondary',
 		userMessageFontColor: '--text-normal',
@@ -142,13 +142,13 @@ export const DEFAULT_SETTINGS: BMOSettings = {
 	},
 	prompts: {
 		prompt: '',
-		promptFolderPath: 'BMO/Prompts',
+		promptFolderPath: 'MAX/Prompts',
 	},
 	editor: {
 		prompt_select_generate_system_role: 'Output user request.',
 	},
 	chatHistory: {
-		chatHistoryPath: 'BMO/History',
+		chatHistoryPath: 'MAX/History',
 		templateFilePath: '',
 		allowRenameNoteTitle: false,
 	},
@@ -225,8 +225,8 @@ export const DEFAULT_SETTINGS: BMOSettings = {
 
 export let checkActiveFile: TFile | null = null;
 
-export default class BMOGPT extends Plugin {
-	settings: BMOSettings;
+export default class MAXGPT extends Plugin {
+	settings: MAXSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -264,7 +264,7 @@ export default class BMOGPT extends Plugin {
 		this.registerEvent(
 			this.app.vault.on('delete', async (file: TFile) => {
 				if (file instanceof TFile && file.path.startsWith(folderPath)) {
-					const filenameMessageHistory = `./.obsidian/plugins/bmo-chatbot/data/messageHistory_${file.name.replace('.md', '.json')}`;
+					const filenameMessageHistory = `./.obsidian/plugins/max-chatbot/data/messageHistory_${file.name.replace('.md', '.json')}`;
 					this.app.vault.adapter.remove(filenameMessageHistory);
 
 					if (file.path === defaultFilePath) {
@@ -307,7 +307,7 @@ export default class BMOGPT extends Plugin {
 					}
 
 					if (file instanceof TFile && file.path.startsWith(folderPath)) {
-						const filenameMessageHistoryPath = './.obsidian/plugins/bmo-chatbot/data/';
+						const filenameMessageHistoryPath = './.obsidian/plugins/max-chatbot/data/';
 						const oldProfileMessageHistory = `messageHistory_${oldPath.replace(`${folderPath}/`, '').replace('.md', '.json')}`;
 
 						await this.app.vault.adapter
@@ -338,15 +338,15 @@ export default class BMOGPT extends Plugin {
 			})
 		);
 
-		this.registerView(VIEW_TYPE_CHATBOT, leaf => new BMOView(leaf, this.settings, this));
+		this.registerView(VIEW_TYPE_CHATBOT, leaf => new MAXView(leaf, this.settings, this));
 
-		this.addRibbonIcon('bot', 'BMO Chatbot', () => {
+		this.addRibbonIcon('bot', 'MAX Chatbot', () => {
 			this.activateView();
 		});
 
 		this.addCommand({
-			id: 'open-bmo-chatbot',
-			name: 'Open BMO Chatbot',
+			id: 'open-max-chatbot',
+			name: 'Open MAX Chatbot',
 			callback: () => {
 				this.activateView();
 			},
@@ -379,7 +379,7 @@ export default class BMOGPT extends Plugin {
 				}
 
 				menu.addItem(item => {
-					item.setTitle('BMO Chatbot: Generate new title').onClick(() => renameTitleCommand(this, this.settings));
+					item.setTitle('MAX Chatbot: Generate new title').onClick(() => renameTitleCommand(this, this.settings));
 				});
 			})
 		);
@@ -398,7 +398,7 @@ export default class BMOGPT extends Plugin {
 			],
 		});
 
-		this.addSettingTab(new BMOSettingTab(this.app, this));
+		this.addSettingTab(new MAXSettingTab(this.app, this));
 	}
 
 	handleFileSwitch() {
@@ -407,9 +407,9 @@ export default class BMOGPT extends Plugin {
 
 	async onunload() {
 		this.app.workspace.getLeavesOfType(VIEW_TYPE_CHATBOT).forEach(leaf => {
-			const bmoView = leaf.view as BMOView;
+			const maxView = leaf.view as MAXView;
 
-			if (bmoView) {
+			if (maxView) {
 				this.saveSettings();
 			}
 		});
@@ -462,7 +462,7 @@ export default class BMOGPT extends Plugin {
 	}
 }
 
-export async function defaultFrontMatter(plugin: BMOGPT, file: TFile) {
+export async function defaultFrontMatter(plugin: MAXGPT, file: TFile) {
 	// Define a callback function to modify the frontmatter
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const setDefaultFrontMatter = async (frontmatter: any) => {
@@ -514,7 +514,7 @@ export async function defaultFrontMatter(plugin: BMOGPT, file: TFile) {
 	plugin.app.vault.append(file, DEFAULT_SETTINGS.general.system_role);
 }
 
-export async function updateSettingsFromFrontMatter(plugin: BMOGPT, file: TFile) {
+export async function updateSettingsFromFrontMatter(plugin: MAXGPT, file: TFile) {
 	// Define a callback function to modify the frontmatter
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const updateSettings = async (frontmatter: any) => {
@@ -567,7 +567,7 @@ export async function updateSettingsFromFrontMatter(plugin: BMOGPT, file: TFile)
 	}
 }
 
-export async function updateFrontMatter(plugin: BMOGPT, file: TFile) {
+export async function updateFrontMatter(plugin: MAXGPT, file: TFile) {
 	// Define a callback function to modify the frontmatter
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const modifyFrontMatter = async (frontmatter: any) => {
@@ -618,7 +618,7 @@ export async function updateFrontMatter(plugin: BMOGPT, file: TFile) {
 	}
 }
 
-export async function updateProfile(plugin: BMOGPT, file: TFile) {
+export async function updateProfile(plugin: MAXGPT, file: TFile) {
 	try {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		await plugin.app.fileManager.processFrontMatter(file, (frontmatter: any) => {

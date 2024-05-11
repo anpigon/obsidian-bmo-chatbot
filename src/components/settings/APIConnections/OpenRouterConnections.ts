@@ -1,7 +1,7 @@
 import {Setting, SettingTab, setIcon} from 'obsidian';
-import BMOGPT from 'src/main';
+import MAXGPT from 'src/main';
 
-export function addOpenRouterConnectionSettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
+export function addOpenRouterConnectionSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});

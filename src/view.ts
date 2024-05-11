@@ -1,6 +1,6 @@
 import {ItemView, WorkspaceLeaf, TFile, MarkdownView, Editor, EditorPosition} from 'obsidian';
-import {DEFAULT_SETTINGS, BMOSettings} from './main';
-import BMOGPT from './main';
+import {DEFAULT_SETTINGS, MAXSettings} from './main';
+import MAXGPT from './main';
 import {executeCommand} from './components/chat/Commands';
 import {getActiveFileContent} from './components/editor/ReferenceCurrentNote';
 import {addMessage} from './components/chat/Message';
@@ -27,8 +27,8 @@ export const VIEW_TYPE_CHATBOT = 'chatbot-view';
 export const ANTHROPIC_MODELS = ['claude-instant-1.2', 'claude-2.0', 'claude-2.1', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229'];
 export const OPENAI_MODELS = ['gpt-3.5-turbo', 'gpt-3.5-turbo-1106', 'gpt-4', 'gpt-4-turbo-preview'];
 
-export function filenameMessageHistoryJSON(plugin: BMOGPT) {
-	const filenameMessageHistoryPath = './.obsidian/plugins/bmo-chatbot/data/';
+export function filenameMessageHistoryJSON(plugin: MAXGPT) {
+	const filenameMessageHistoryPath = './.obsidian/plugins/max-chatbot/data/';
 	const currentProfileMessageHistory = `messageHistory_${plugin.settings.profiles.profile.replace('.md', '.json')}`;
 
 	return filenameMessageHistoryPath + currentProfileMessageHistory;
@@ -44,13 +44,13 @@ export let lastCursorPosition: EditorPosition = {
 export let lastCursorPositionFile: TFile | null = null;
 export let activeEditor: Editor | null | undefined = null;
 
-export class BMOView extends ItemView {
-	private settings: BMOSettings;
+export class MAXView extends ItemView {
+	private settings: MAXSettings;
 	private textareaElement: HTMLTextAreaElement;
 	private preventEnter = false;
-	private plugin: BMOGPT;
+	private plugin: MAXGPT;
 
-	constructor(leaf: WorkspaceLeaf, settings: BMOSettings, plugin: BMOGPT) {
+	constructor(leaf: WorkspaceLeaf, settings: MAXSettings, plugin: MAXGPT) {
 		super(leaf);
 		this.settings = settings;
 		this.plugin = plugin;
@@ -63,7 +63,7 @@ export class BMOView extends ItemView {
 	}
 
 	getDisplayText() {
-		return 'BMO Chatbot';
+		return 'MAX Chatbot';
 	}
 
 	async onOpen(): Promise<void> {
@@ -301,7 +301,7 @@ export class BMOView extends ItemView {
 					this.preventEnter = true;
 
 					// Call the chatbot function with the user's input
-					this.BMOchatbot()
+					this.MAXchatbot()
 						.then(() => {
 							this.preventEnter = false;
 						})
@@ -378,7 +378,7 @@ export class BMOView extends ItemView {
 		this.textareaElement.removeEventListener('blur', this.handleBlur.bind(this));
 	}
 
-	async BMOchatbot() {
+	async MAXchatbot() {
 		await getActiveFileContent(this.plugin, this.settings);
 		const index = messageHistory.length - 1;
 
@@ -444,7 +444,7 @@ export class BMOView extends ItemView {
 				lastBotMessage.scrollIntoView({behavior: 'smooth', block: 'start'});
 			}
 		}
-		// console.log('BMO settings:', this.settings);
+		// console.log('MAX settings:', this.settings);
 	}
 
 	async onClose() {
@@ -453,9 +453,9 @@ export class BMOView extends ItemView {
 }
 
 // Create data folder and load JSON file
-async function loadData(plugin: BMOGPT) {
-	if (!(await plugin.app.vault.adapter.exists('./.obsidian/plugins/bmo-chatbot/data/'))) {
-		plugin.app.vault.adapter.mkdir('./.obsidian/plugins/bmo-chatbot/data/');
+async function loadData(plugin: MAXGPT) {
+	if (!(await plugin.app.vault.adapter.exists('./.obsidian/plugins/max-chatbot/data/'))) {
+		plugin.app.vault.adapter.mkdir('./.obsidian/plugins/max-chatbot/data/');
 	}
 
 	if (await plugin.app.vault.adapter.exists(filenameMessageHistoryJSON(plugin))) {
@@ -476,7 +476,7 @@ async function loadData(plugin: BMOGPT) {
 }
 
 // Delete all messages from the messageContainer and the messageHistory array
-export async function deleteAllMessages(plugin: BMOGPT) {
+export async function deleteAllMessages(plugin: MAXGPT) {
 	const messageContainer = document.querySelector('#messageContainer');
 
 	// Remove all child nodes from the messageContainer

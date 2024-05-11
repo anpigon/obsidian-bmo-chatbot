@@ -1,5 +1,5 @@
 import {DropdownComponent, Notice, Setting, SettingTab, setIcon} from 'obsidian';
-import BMOGPT, {DEFAULT_SETTINGS} from 'src/main';
+import MAXGPT, {DEFAULT_SETTINGS} from 'src/main';
 import {ANTHROPIC_MODELS} from 'src/view';
 import {
 	fetchGoogleGeminiModels,
@@ -11,7 +11,7 @@ import {
 } from '../FetchModelList';
 import {DEFAULT_MODEL} from '../../constants';
 
-export async function addGeneralSettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
+export async function addGeneralSettings(containerEl: HTMLElement, plugin: MAXGPT, SettingTab: SettingTab) {
 	const toggleSettingContainer = containerEl.createDiv({
 		cls: 'toggleSettingContainer',
 	});
@@ -163,7 +163,7 @@ export async function addGeneralSettings(containerEl: HTMLElement, plugin: BMOGP
 	}
 }
 
-async function populateDropdownWithModels(plugin: BMOGPT, dropdown: DropdownComponent) {
+async function populateDropdownWithModels(plugin: MAXGPT, dropdown: DropdownComponent) {
 	// Initialize an empty array to store all unique models
 	plugin.settings.allModels = [];
 

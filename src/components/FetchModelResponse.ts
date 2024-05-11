@@ -1,6 +1,6 @@
 import {MarkdownRenderer, Notice, requestUrl, setIcon} from 'obsidian';
 import {ChatOllama} from '@langchain/community/chat_models/ollama';
-import BMOGPT, {BMOSettings} from '../main';
+import MAXGPT, {MAXSettings} from '../main';
 import {messageHistory} from '../view';
 import {ChatCompletionMessageParam} from 'openai/resources/chat';
 import {addMessage, addParagraphBreaks} from './chat/Message';
@@ -15,7 +15,7 @@ let abortController = new AbortController();
 
 // Fetch response from Ollama
 // NOTE: Abort does not work for requestUrl
-export async function fetchXionicResponse(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchXionicResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const openai = new OpenAI({
 		apiKey: settings.APIConnections.openAI.APIKey,
 		baseURL: settings.APIConnections.openAI.openAIBaseUrl,
@@ -98,7 +98,7 @@ export async function fetchXionicResponse(plugin: BMOGPT, settings: BMOSettings,
 	}
 }
 
-export async function fetchOllamaResponse(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchOllamaResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const ollamaRESTAPIURL = settings.OllamaConnection.RESTAPIURL;
 	if (!ollamaRESTAPIURL) {
 		return;
@@ -174,7 +174,7 @@ export async function fetchOllamaResponse(plugin: BMOGPT, settings: BMOSettings,
 }
 
 // Fetch response from Ollama (stream)
-export async function fetchOllamaResponseStream(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchOllamaResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const ollamaRESTAPIURL = settings.OllamaConnection.RESTAPIURL;
 
 	if (!ollamaRESTAPIURL) {
@@ -329,7 +329,7 @@ export async function fetchOllamaResponseStream(plugin: BMOGPT, settings: BMOSet
 }
 
 // Fetch response from openai-based rest api url
-export async function fetchRESTAPIURLResponse(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchRESTAPIURLResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
 	const messageHistoryAtIndex = removeConsecutiveUserRoles(filteredMessageHistory);
@@ -411,7 +411,7 @@ export async function fetchRESTAPIURLResponse(plugin: BMOGPT, settings: BMOSetti
 }
 
 // Fetch response from openai-based rest api url (stream)
-export async function fetchRESTAPIURLResponseStream(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchRESTAPIURLResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const RESTAPIURL = settings.RESTAPIURLConnection.RESTAPIURL;
 
 	if (!RESTAPIURL) {
@@ -577,7 +577,7 @@ export async function fetchRESTAPIURLResponseStream(plugin: BMOGPT, settings: BM
 }
 
 // Fetch response from Anthropic
-export async function fetchAnthropicResponse(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchAnthropicResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
@@ -656,7 +656,7 @@ export async function fetchAnthropicResponse(plugin: BMOGPT, settings: BMOSettin
 }
 
 // Fetch response from Google Gemini
-export async function fetchGoogleGeminiResponse(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchGoogleGeminiResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
 	const messageHistoryAtIndex = removeConsecutiveUserRoles(filteredMessageHistory);
@@ -769,7 +769,7 @@ export async function fetchGoogleGeminiResponse(plugin: BMOGPT, settings: BMOSet
 }
 
 // Fetch response from Mistral
-export async function fetchMistralResponse(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchMistralResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
 	const messageHistoryAtIndex = removeConsecutiveUserRoles(filteredMessageHistory);
@@ -850,7 +850,7 @@ export async function fetchMistralResponse(plugin: BMOGPT, settings: BMOSettings
 }
 
 // Fetch response Mistral (stream)
-export async function fetchMistralResponseStream(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchMistralResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	abortController = new AbortController();
 	const prompt = await getPrompt(plugin, settings);
 
@@ -1007,7 +1007,7 @@ export async function fetchMistralResponseStream(plugin: BMOGPT, settings: BMOSe
 }
 
 // Fetch OpenAI-Based API
-export async function fetchOpenAIAPIResponse(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchOpenAIAPIResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const openai = new OpenAI({
 		apiKey: settings.APIConnections.openAI.APIKey,
 		baseURL: settings.APIConnections.openAI.openAIBaseUrl,
@@ -1088,7 +1088,7 @@ export async function fetchOpenAIAPIResponse(plugin: BMOGPT, settings: BMOSettin
 }
 
 // Fetch OpenAI-Based API Stream
-export async function fetchOpenAIAPIResponseStream(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchOpenAIAPIResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const openai = new OpenAI({
 		apiKey: settings.APIConnections.openAI.APIKey,
 		baseURL: settings.APIConnections.openAI.openAIBaseUrl,
@@ -1206,7 +1206,7 @@ export async function fetchOpenAIAPIResponseStream(plugin: BMOGPT, settings: BMO
 }
 
 // Fetch response from OpenRouter
-export async function fetchOpenRouterResponse(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchOpenRouterResponse(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const prompt = await getPrompt(plugin, settings);
 	const filteredMessageHistory = filterMessageHistory(messageHistory);
 	const messageHistoryAtIndex = removeConsecutiveUserRoles(filteredMessageHistory);
@@ -1288,7 +1288,7 @@ export async function fetchOpenRouterResponse(plugin: BMOGPT, settings: BMOSetti
 }
 
 // Fetch response from openai-based rest api url (stream)
-export async function fetchOpenRouterResponseStream(plugin: BMOGPT, settings: BMOSettings, index: number) {
+export async function fetchOpenRouterResponseStream(plugin: MAXGPT, settings: MAXSettings, index: number) {
 	const url = 'https://openrouter.ai/api/v1/chat/completions';
 
 	abortController = new AbortController();
@@ -1452,7 +1452,7 @@ export function getAbortController() {
 	return abortController;
 }
 
-function ollamaParametersOptions(settings: BMOSettings) {
+function ollamaParametersOptions(settings: MAXSettings) {
 	return {
 		mirostat: parseInt(settings.OllamaConnection.ollamaParameters.mirostat),
 		mirostat_eta: parseFloat(settings.OllamaConnection.ollamaParameters.mirostat_eta),

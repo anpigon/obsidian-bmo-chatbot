@@ -1,10 +1,10 @@
 import {Notice, requestUrl} from 'obsidian';
 import OpenAI from 'openai';
-import {BMOSettings} from 'src/main';
+import {MAXSettings} from 'src/main';
 import {ANTHROPIC_MODELS, OPENAI_MODELS} from 'src/view';
 
 // Rename note title based on specified model
-export async function fetchModelRenameTitle(settings: BMOSettings, referenceCurrentNoteContent: string) {
+export async function fetchModelRenameTitle(settings: MAXSettings, referenceCurrentNoteContent: string) {
 	const clearYamlContent = referenceCurrentNoteContent.replace(/---[\s\S]+?---/, '').trim();
 
 	const prompt = `You are a title generator. You will give succinct titles that does not contain backslashes,

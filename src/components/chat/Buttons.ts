@@ -1,5 +1,5 @@
 import {MarkdownRenderer, Modal, Notice, setIcon} from 'obsidian';
-import BMOGPT, {BMOSettings, checkActiveFile} from 'src/main';
+import MAXGPT, {MAXSettings, checkActiveFile} from 'src/main';
 import {ANTHROPIC_MODELS, OPENAI_MODELS, activeEditor, filenameMessageHistoryJSON, lastCursorPosition, lastCursorPositionFile, messageHistory} from 'src/view';
 import {
 	fetchOpenAIAPIResponseStream,
@@ -17,7 +17,7 @@ import {
 } from '../FetchModelResponse';
 import {getActiveFileContent} from '../editor/ReferenceCurrentNote';
 
-export function regenerateUserButton(plugin: BMOGPT, settings: BMOSettings) {
+export function regenerateUserButton(plugin: MAXGPT, settings: MAXSettings) {
 	const regenerateButton = document.createElement('button');
 	regenerateButton.textContent = 'regenerate';
 	setIcon(regenerateButton, 'refresh-ccw');
@@ -102,7 +102,7 @@ export function regenerateUserButton(plugin: BMOGPT, settings: BMOSettings) {
 	return regenerateButton;
 }
 
-export function displayUserEditButton(plugin: BMOGPT, settings: BMOSettings, userPre: HTMLPreElement) {
+export function displayUserEditButton(plugin: MAXGPT, settings: MAXSettings, userPre: HTMLPreElement) {
 	const editButton = document.createElement('button');
 	editButton.textContent = 'edit';
 	setIcon(editButton, 'edit'); // Assuming setIcon is defined elsewhere
@@ -226,7 +226,7 @@ export function displayUserEditButton(plugin: BMOGPT, settings: BMOSettings, use
 	return editButton;
 }
 
-export function displayBotEditButton(plugin: BMOGPT, message: string) {
+export function displayBotEditButton(plugin: MAXGPT, message: string) {
 	const editButton = document.createElement('button');
 	editButton.textContent = 'edit';
 	setIcon(editButton, 'edit');
@@ -354,7 +354,7 @@ export function displayUserCopyButton(userPre: HTMLPreElement) {
 	return copyButton;
 }
 
-export function displayBotCopyButton(settings: BMOSettings, message: string) {
+export function displayBotCopyButton(settings: MAXSettings, message: string) {
 	const copyButton = document.createElement('button');
 	copyButton.textContent = 'copy';
 	setIcon(copyButton, 'copy');
@@ -382,7 +382,7 @@ export function copyMessageToClipboard(message: string) {
 }
 
 // Append button to editor
-export function displayAppendButton(plugin: BMOGPT, settings: BMOSettings, message: string) {
+export function displayAppendButton(plugin: MAXGPT, settings: MAXSettings, message: string) {
 	const appendButton = document.createElement('button');
 	appendButton.textContent = 'append';
 	setIcon(appendButton, 'plus-square');
@@ -415,7 +415,7 @@ export function displayAppendButton(plugin: BMOGPT, settings: BMOSettings, messa
 	return appendButton;
 }
 
-export function displayTrashButton(plugin: BMOGPT) {
+export function displayTrashButton(plugin: MAXGPT) {
 	const trashButton = document.createElement('button');
 	trashButton.textContent = 'trash';
 	setIcon(trashButton, 'trash');
@@ -463,7 +463,7 @@ export function displayTrashButton(plugin: BMOGPT) {
 	return trashButton;
 }
 
-export async function deleteMessage(plugin: BMOGPT, index: number) {
+export async function deleteMessage(plugin: MAXGPT, index: number) {
 	const messageContainer = document.querySelector('#messageContainer');
 
 	const divElements = messageContainer?.querySelectorAll('div.botMessage, div.userMessage');
