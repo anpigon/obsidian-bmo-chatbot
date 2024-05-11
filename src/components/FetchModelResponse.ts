@@ -1,4 +1,5 @@
 import { MarkdownRenderer, Notice, requestUrl, setIcon } from 'obsidian';
+import { ChatOllama } from '@langchain/community/chat_models/ollama';
 import BMOGPT, { BMOSettings } from '../main';
 import { messageHistory } from '../view';
 import { ChatCompletionMessageParam } from 'openai/resources/chat';
@@ -7,6 +8,8 @@ import { displayErrorBotMessage, displayLoadingBotMessage } from './chat/BotMess
 import { getActiveFileContent, getCurrentNoteContent } from './editor/ReferenceCurrentNote';
 import OpenAI from 'openai';
 import { getPrompt } from './chat/Prompt';
+import { BaseLanguageModelInput } from '@langchain/core/language_models/base';
+import { BaseMessageLike } from '@langchain/core/messages';
 
 let abortController = new AbortController();
 
@@ -14,7 +17,6 @@ let abortController = new AbortController();
 // NOTE: Abort does not work for requestUrl
 export async function fetchOllamaResponse(plugin: BMOGPT, settings: BMOSettings, index: number) {
     const ollamaRESTAPIURL = settings.OllamaConnection.RESTAPIURL;
-
     if (!ollamaRESTAPIURL) {
         return;
     }
@@ -36,25 +38,29 @@ export async function fetchOllamaResponse(plugin: BMOGPT, settings: BMOSettings,
     const referenceCurrentNoteContent = getCurrentNoteContent();
 
     try {
-        const response = await requestUrl({
-            url: ollamaRESTAPIURL + '/api/chat',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                model: settings.general.model,
-                messages: [
-                    { role: 'system', content: settings.general.system_role + prompt + referenceCurrentNoteContent},
-                    ...messageHistoryAtIndex
-                ],
-                stream: false,
-                keep_alive: parseInt(settings.OllamaConnection.ollamaParameters.keep_alive),
-                options: ollamaParametersOptions(settings),
-            }),
+        const ollama = new ChatOllama({
+			baseUrl: ollamaRESTAPIURL,
+			model: settings.general.model,
         });
-
-        const message = response.json.message.content;
+        const chatHistory: BaseLanguageModelInput = [
+			[
+				"system",
+				settings.general.system_role +
+					prompt +
+					referenceCurrentNoteContent,
+			],
+			...(messageHistoryAtIndex.map(({ role, content }) => [
+				role,
+				content,
+			]) as BaseMessageLike[]),
+		];
+        const response = await ollama.invoke(
+			chatHistory,
+			{
+				configurable: ollamaParametersOptions(settings),
+			}
+		);
+        const message = response.content;
 
         if (messageContainerEl) {
             const targetUserMessage = messageContainerElDivs[index];
