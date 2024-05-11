@@ -3,19 +3,22 @@ import builtins from 'builtin-modules';
 import {defineConfig} from 'vite';
 import {pathToFileURL} from 'url';
 import typescript from '@rollup/plugin-typescript';
-
-const setOutDir = (mode: string) => {
-	switch (mode) {
-		case 'development':
-			return './build/smart-second-brain/';
-		case 'production':
-			return 'build/prod';
-	}
-};
+import copy from 'rollup-plugin-copy';
 
 export default defineConfig(({mode}) => {
 	return {
-		plugins: [react()],
+		plugins: [
+			react(),
+			copy({
+				targets: [
+					{
+						src: './manifest.json',
+						dest: 'build/',
+					},
+				],
+				hook: 'writeBundle',
+			}),
+		],
 		build: {
 			lib: {
 				entry: 'src/main',
@@ -26,7 +29,7 @@ export default defineConfig(({mode}) => {
 				output: {
 					entryFileNames: 'main.js',
 					assetFileNames: 'styles.css',
-					sourcemapBaseUrl: pathToFileURL(`${__dirname}/build/smart-second-brain/`).toString(),
+					sourcemapBaseUrl: pathToFileURL(`${__dirname}/build/`).toString(),
 				},
 				external: [
 					'obsidian',
@@ -45,9 +48,9 @@ export default defineConfig(({mode}) => {
 					...builtins,
 				],
 			},
-			outDir: setOutDir(mode),
+			outDir: './build',
 			emptyOutDir: false,
-			sourcemap: true,
+			sourcemap: mode === 'development',
 		},
 		css: {
 			devSourcemap: true,
