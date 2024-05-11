@@ -1,3 +1,5 @@
+import React from 'react';
+import {Root, createRoot} from 'react-dom/client';
 import {ItemView, WorkspaceLeaf, TFile, MarkdownView, Editor, EditorPosition} from 'obsidian';
 import MAXPlugin from './main';
 import {executeCommand} from './components/chat/Commands';
@@ -22,6 +24,8 @@ import {
 } from './components/FetchModelResponse';
 import {DEFAULT_MODEL, DEFAULT_SETTINGS} from './constants';
 import {MAXSettings} from './types';
+import {ChatBotView} from './features/chatbot';
+import {AppContext} from './context';
 
 export const VIEW_TYPE_CHATBOT = 'max-chatbot-view';
 export const ANTHROPIC_MODELS = ['claude-instant-1.2', 'claude-2.0', 'claude-2.1', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229'];
@@ -49,12 +53,15 @@ export class MAXView extends ItemView {
 	private textareaElement: HTMLTextAreaElement;
 	private preventEnter = false;
 	private plugin: MAXPlugin;
+	private root: Root | null = null;
 
 	constructor(leaf: WorkspaceLeaf, settings: MAXSettings, plugin: MAXPlugin) {
 		super(leaf);
+
 		this.settings = settings;
 		this.plugin = plugin;
 		this.icon = 'bot';
+
 		this.addCursorLogging();
 	}
 
@@ -63,12 +70,23 @@ export class MAXView extends ItemView {
 	}
 
 	getDisplayText() {
-		return 'MAX Chatbot';
+		return 'MAX Chatbot view';
 	}
 
 	async onOpen(): Promise<void> {
+		this.root = createRoot(this.containerEl.children[1]);
+		this.root.render(
+			<React.StrictMode>
+				<AppContext.Provider value={this.plugin}>
+					<ChatBotView />
+				</AppContext.Provider>
+			</React.StrictMode>
+		);
+		return;
+
 		const container = this.containerEl.children[1];
 		container.empty();
+
 		const chatbotContainer = container.createEl('div', {
 			attr: {
 				class: 'chatbotContainer',
@@ -449,6 +467,7 @@ export class MAXView extends ItemView {
 
 	async onClose() {
 		// Nothing to clean up.
+		this.root?.unmount();
 	}
 }
 
