@@ -5,6 +5,7 @@ import {ChatbotHeader} from './components/chatbot-header';
 import {MessageContainer} from './components/message-container';
 import {UserMessage} from './components/user-message';
 import {BotMessage} from './components/bot-message';
+import {ChatBox} from './components/chat-box';
 
 export const ChatbotView: React.FC = () => {
 	const settings = useSettings();
@@ -19,6 +20,7 @@ export const ChatbotView: React.FC = () => {
 				<UserMessage username={username} message="test" />
 				<BotMessage username={username} message="test" />
 			</MessageContainer>
+			<ChatBox />
 		</ChatbotContainer>
 	);
 };
