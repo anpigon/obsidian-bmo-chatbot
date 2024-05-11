@@ -113,4 +113,5 @@ export const DEFAULT_SETTINGS: MAXSettings = {
 	toggleOllamaSettings: true,
 	toggleAdvancedSettings: false,
 	allModels: [],
+	isVerbose: false,
 };

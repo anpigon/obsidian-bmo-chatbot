@@ -24,7 +24,7 @@ import {
 } from './components/FetchModelResponse';
 import {DEFAULT_MODEL, DEFAULT_SETTINGS} from './constants';
 import {MAXSettings} from './types';
-import {ChatBotView} from './features/chatbot';
+import {ChatbotView} from './features/chatbot';
 import {AppContext} from './context';
 
 export const VIEW_TYPE_CHATBOT = 'max-chatbot-view';
@@ -78,7 +78,7 @@ export class MAXView extends ItemView {
 		this.root.render(
 			<React.StrictMode>
 				<AppContext.Provider value={this.plugin}>
-					<ChatBotView />
+					<ChatbotView />
 				</AppContext.Provider>
 			</React.StrictMode>
 		);

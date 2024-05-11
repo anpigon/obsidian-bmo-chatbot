@@ -104,4 +104,5 @@ export interface MAXSettings {
 	toggleOllamaSettings: boolean;
 	toggleAdvancedSettings: boolean;
 	allModels: string[];
+	isVerbose: boolean;
 }

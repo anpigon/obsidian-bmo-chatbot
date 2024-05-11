@@ -4,6 +4,7 @@ import {DEFAULT_SETTINGS} from './constants';
 import {MAXSettingTab} from './settings';
 import {colorToHex, isValidHexColor} from './utils/ColorConverter';
 import {MAXView, VIEW_TYPE_CHATBOT} from './view';
+import Logger, {LogLvl} from './utils/logging';
 
 import './styles.css';
 import {MAXSettings} from './types';
@@ -15,6 +16,8 @@ export default class MAXPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+
+		Logger.setLogLevel(this.settings?.isVerbose ? LogLvl.DEBUG : LogLvl.DISABLED);
 
 		const folderPath = this.settings?.profiles.profileFolderPath || DEFAULT_SETTINGS.profiles.profileFolderPath;
 

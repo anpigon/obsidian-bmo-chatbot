@@ -1,1 +1,1 @@
-export {ChatBotView} from './chatbot-view';
+export {ChatbotView} from './chatbot-view';
