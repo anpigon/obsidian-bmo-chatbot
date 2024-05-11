@@ -4,6 +4,7 @@ import {ChatbotContainer} from './components/chatbot-container';
 import {ChatbotHeader} from './components/chatbot-header';
 import {MessageContainer} from './components/message-container';
 import {UserMessage} from './components/user-message';
+import {BotMessage} from './components/bot-message';
 
 export const ChatbotView: React.FC = () => {
 	const settings = useSettings();
@@ -16,6 +17,7 @@ export const ChatbotView: React.FC = () => {
 			<ChatbotHeader chatbotName={chatbotName} modelName={modelName} />
 			<MessageContainer>
 				<UserMessage username={username} message="test" />
+				<BotMessage username={username} message="test" />
 			</MessageContainer>
 		</ChatbotContainer>
 	);

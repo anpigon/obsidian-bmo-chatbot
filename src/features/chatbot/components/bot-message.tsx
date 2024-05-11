@@ -9,9 +9,9 @@ export interface UserMessageProps {
 	message: string;
 }
 
-export const UserMessage: React.FC<UserMessageProps> = ({username, message}) => {
+export const BotMessage: React.FC<UserMessageProps> = ({username, message}) => {
 	return (
-		<div className="bg-[var(--background-primary)] relative m-0 p-3 w-full inline-block group">
+		<div className="relative m-0 p-3 w-full inline-block group">
 			<div data-component="userMessageToolBar" className="flex justify-between items-center h-5">
 				<span data-component="username" className="block text-sm font-bold text-[var(--interactive-accent)] m-0">
 					{username}
@@ -31,7 +31,9 @@ export const UserMessage: React.FC<UserMessageProps> = ({username, message}) => 
 					</Button>
 				</div>
 			</div>
-			<div className="m-0 whitespace-pre-wrap">{message}</div>
+			<div className="m-0 break-words *:m-0 *:leading-6">
+				<p>{message}</p>
+			</div>
 		</div>
 	);
 };
