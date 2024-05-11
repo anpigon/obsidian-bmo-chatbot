@@ -3,6 +3,7 @@ import { BMOView, VIEW_TYPE_CHATBOT} from './view';
 import { BMOSettingTab } from './settings';
 import { promptSelectGenerateCommand, renameTitleCommand } from './components/editor/EditorCommands';
 import { colorToHex, isValidHexColor } from './utils/ColorConverter';
+import { DEFAULT_MODEL, DEFAULT_OLLAMA_REST_API_URL } from "./constants";
 
 export interface BMOSettings {
 	profiles: {
@@ -114,90 +115,90 @@ export interface BMOSettings {
 
 export const DEFAULT_SETTINGS: BMOSettings = {
 	profiles: {
-		profile: 'BMO.md',
-		profileFolderPath: 'BMO/Profiles',
+		profile: "BMO.md",
+		profileFolderPath: "BMO/Profiles",
 	},
 	general: {
-		model: '',
-		system_role: 'You are a helpful assistant.',
-		max_tokens: '',
-		temperature: '1.00',
+		model: DEFAULT_MODEL,
+		system_role: "You are a helpful assistant.",
+		max_tokens: "",
+		temperature: "1.00",
 		allowReferenceCurrentNote: false,
 	},
 	appearance: {
-		userName: 'USER',
-		chatbotName: 'BMO',
-		chatbotContainerBackgroundColor: '--background-secondary',
-		messageContainerBackgroundColor: '--background-secondary',
-		userMessageFontColor: '--text-normal',
-		userMessageBackgroundColor: '--background-primary',
-		botMessageFontColor: '--text-normal',
-		botMessageBackgroundColor: '--background-secondary',
-		chatBoxFontColor: '--text-normal',
-		chatBoxBackgroundColor: '--interactive-accent',
+		userName: "USER",
+		chatbotName: "BMO",
+		chatbotContainerBackgroundColor: "--background-secondary",
+		messageContainerBackgroundColor: "--background-secondary",
+		userMessageFontColor: "--text-normal",
+		userMessageBackgroundColor: "--background-primary",
+		botMessageFontColor: "--text-normal",
+		botMessageBackgroundColor: "--background-secondary",
+		chatBoxFontColor: "--text-normal",
+		chatBoxBackgroundColor: "--interactive-accent",
 		allowHeader: true,
 	},
 	prompts: {
-		prompt: '',
-		promptFolderPath: 'BMO/Prompts',
+		prompt: "",
+		promptFolderPath: "BMO/Prompts",
 	},
 	editor: {
-		prompt_select_generate_system_role: 'Output user request.',
+		prompt_select_generate_system_role: "Output user request.",
 	},
 	chatHistory: {
-		chatHistoryPath: 'BMO/History',
-		templateFilePath: '',
+		chatHistoryPath: "BMO/History",
+		templateFilePath: "",
 		allowRenameNoteTitle: false,
 	},
 	OllamaConnection: {
-		RESTAPIURL: '',
+		RESTAPIURL: DEFAULT_OLLAMA_REST_API_URL,
 		allowStream: false,
 		ollamaParameters: {
-			keep_alive: '',
-			mirostat: '0',
-			mirostat_eta: '0.10',
-			mirostat_tau: '5.00',
-			num_ctx: '2048',
-			num_gqa: '',
-			num_thread: '',
-			repeat_last_n: '64',
-			repeat_penalty: '1.10',
-			seed: '',
+			keep_alive: "",
+			mirostat: "0",
+			mirostat_eta: "0.10",
+			mirostat_tau: "5.00",
+			num_ctx: "2048",
+			num_gqa: "",
+			num_thread: "",
+			repeat_last_n: "64",
+			repeat_penalty: "1.10",
+			seed: "",
 			stop: [],
-			tfs_z: '1.00',
-			top_k: '40',
-			top_p: '0.90',
+			tfs_z: "1.00",
+			top_k: "40",
+			top_p: "0.90",
 		},
 		ollamaModels: [],
 	},
 	RESTAPIURLConnection: {
-		APIKey: '',	
-		RESTAPIURL: '',
+		APIKey: "",
+		RESTAPIURL: "",
 		allowStream: false,
 		RESTAPIURLModels: [],
 	},
 	APIConnections: {
 		anthropic: {
-			APIKey: '',
+			APIKey: "",
 			anthropicModels: [],
 		},
 		googleGemini: {
-			APIKey: '',
+			APIKey: "",
 			geminiModels: [],
 		},
 		mistral: {
-			APIKey: '',
+			APIKey: "",
 			allowStream: false,
 			mistralModels: [],
 		},
 		openAI: {
-			APIKey: '',
-			openAIBaseUrl: 'https://api.openai.com/v1',
+			APIKey: "",
+			openAIBaseUrl: "https://api.openai.com/v1",
 			allowStream: true,
 			openAIBaseModels: [],
 		},
 		openRouter: {
-			APIKey: '',
+			APIKey: "",
 			allowStream: false,
 			openRouterModels: [],
 		},
@@ -218,7 +219,7 @@ export const DEFAULT_SETTINGS: BMOSettings = {
 	toggleOllamaSettings: true,
 	toggleAdvancedSettings: false,
 	allModels: [],
-}
+};
 
 export let checkActiveFile: TFile | null = null;
 
