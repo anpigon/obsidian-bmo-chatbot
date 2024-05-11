@@ -12,13 +12,14 @@ export const ChatbotView: React.FC = () => {
 	const chatbotName = settings?.appearance?.chatbotName ?? DEFAULT_SETTINGS.appearance.chatbotName;
 	const modelName = settings?.general.model || DEFAULT_SETTINGS.general.model;
 	const username = settings?.appearance.userName || DEFAULT_SETTINGS.appearance.userName;
+	const botName = settings?.appearance.chatbotName || DEFAULT_SETTINGS.appearance.chatbotName;
 
 	return (
 		<ChatbotContainer>
 			<ChatbotHeader chatbotName={chatbotName} modelName={modelName} />
 			<MessageContainer>
 				<UserMessage username={username} message="test" />
-				<BotMessage username={username} message="test" />
+				<BotMessage name={botName} message="test" />
 			</MessageContainer>
 			<ChatBox />
 		</ChatbotContainer>
