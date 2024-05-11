@@ -1,51 +1,35 @@
-import BMOGPT, { BMOSettings, DEFAULT_SETTINGS } from "src/main";
-import { colorToHex } from "src/utils/ColorConverter";
-import {
-	displayUserEditButton,
-	displayTrashButton,
-	displayUserCopyButton,
-	regenerateUserButton,
-} from "./Buttons";
+import BMOGPT, {BMOSettings, DEFAULT_SETTINGS} from 'src/main';
+import {colorToHex} from 'src/utils/ColorConverter';
+import {displayUserEditButton, displayTrashButton, displayUserCopyButton, regenerateUserButton} from './Buttons';
 
-export function displayUserMessage(
-	plugin: BMOGPT,
-	settings: BMOSettings,
-	message: string,
-) {
+export function displayUserMessage(plugin: BMOGPT, settings: BMOSettings, message: string) {
 	const trimmedMessage = message.trim();
 
-	const userMessageDiv = document.createElement("div");
-	userMessageDiv.className = "userMessage";
+	const userMessageDiv = document.createElement('div');
+	userMessageDiv.className = 'userMessage';
 	userMessageDiv.style.backgroundColor = colorToHex(
 		settings.appearance.userMessageBackgroundColor ||
-			getComputedStyle(document.body)
-				.getPropertyValue(
-					DEFAULT_SETTINGS.appearance.userMessageBackgroundColor,
-				)
-				.trim(),
+			getComputedStyle(document.body).getPropertyValue(DEFAULT_SETTINGS.appearance.userMessageBackgroundColor).trim()
 	);
 
-	userMessageDiv.style.color =
-		settings.appearance.userMessageFontColor ||
-		DEFAULT_SETTINGS.appearance.userMessageFontColor;
+	userMessageDiv.style.color = settings.appearance.userMessageFontColor || DEFAULT_SETTINGS.appearance.userMessageFontColor;
 
-	const userMessageToolBarDiv = document.createElement("div");
-	userMessageToolBarDiv.className = "userMessageToolBar";
+	const userMessageToolBarDiv = document.createElement('div');
+	userMessageToolBarDiv.className = 'userMessageToolBar';
 
-	const buttonContainerDiv = document.createElement("div");
-	buttonContainerDiv.className = "button-container";
+	const buttonContainerDiv = document.createElement('div');
+	buttonContainerDiv.className = 'button-container';
 
-	const userNameSpan = document.createElement("span");
-	userNameSpan.className = "userName";
-	userNameSpan.textContent =
-		settings.appearance.userName || DEFAULT_SETTINGS.appearance.userName;
+	const userNameSpan = document.createElement('span');
+	userNameSpan.className = 'userName';
+	userNameSpan.textContent = settings.appearance.userName || DEFAULT_SETTINGS.appearance.userName;
 
 	userMessageToolBarDiv.appendChild(userNameSpan);
 	userMessageToolBarDiv.appendChild(buttonContainerDiv);
 
-	const userPre = document.createElement("pre");
-	const preUserMessage = document.createElement("span");
-	preUserMessage.className = "preUserMessage";
+	const userPre = document.createElement('pre');
+	const preUserMessage = document.createElement('span');
+	preUserMessage.className = 'preUserMessage';
 	userPre.appendChild(preUserMessage);
 
 	preUserMessage.innerHTML = trimmedMessage;
@@ -55,7 +39,7 @@ export function displayUserMessage(
 	const copyUserButton = displayUserCopyButton(userPre);
 	const trashButton = displayTrashButton(plugin);
 
-	if (!message.startsWith("/")) {
+	if (!message.startsWith('/')) {
 		buttonContainerDiv.appendChild(regenerateButton);
 		buttonContainerDiv.appendChild(editButton);
 	}

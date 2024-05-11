@@ -1,10 +1,10 @@
 // Function to convert HSL or RGB to HEX
 export function colorToHex(colorValue: string): string {
-	if (colorValue.startsWith("hsl")) {
+	if (colorValue.startsWith('hsl')) {
 		// Convert HSL to HEX
 		const match = colorValue.match(/(\d+(\.\d+)?)%?/g);
 		if (match === null || match.length < 3) {
-			throw new Error("Invalid HSL value");
+			throw new Error('Invalid HSL value');
 		}
 
 		const h = parseInt(match[0]) / 360;
@@ -24,10 +24,10 @@ export function colorToHex(colorValue: string): string {
 
 		const hex = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 		return hex;
-	} else if (colorValue.startsWith("rgb")) {
+	} else if (colorValue.startsWith('rgb')) {
 		// Convert RGB to HEX
-		const sep = colorValue.indexOf(",") > -1 ? "," : " ";
-		const rgbArray = colorValue.substr(4).split(")")[0].split(sep);
+		const sep = colorValue.indexOf(',') > -1 ? ',' : ' ';
+		const rgbArray = colorValue.substr(4).split(')')[0].split(sep);
 
 		let r = (+rgbArray[0]).toString(16);
 		let g = (+rgbArray[1]).toString(16);
