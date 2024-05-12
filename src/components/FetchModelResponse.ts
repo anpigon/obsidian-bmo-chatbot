@@ -7,6 +7,7 @@ import { displayErrorBotMessage, displayLoadingBotMessage } from './chat/BotMess
 import { getActiveFileContent, getCurrentNoteContent } from './editor/ReferenceCurrentNote';
 import OpenAI from 'openai';
 import { getPrompt } from './chat/Prompt';
+import { SIONIC_API_KEY, SIONIC_API_URL } from 'src/constants';
 
 let abortController = new AbortController();
 
@@ -1431,4 +1432,118 @@ function removeConsecutiveUserRoles(messageHistory: { role: string; content: str
         }
     }
     return result;
+}
+
+export async function fetchSionicAIAPIResponseStream(plugin: BMOGPT, settings: BMOSettings, index: number) {
+    const openai = new OpenAI({
+        apiKey: SIONIC_API_KEY,
+        baseURL: SIONIC_API_URL,
+        dangerouslyAllowBrowser: true, // apiKey is stored within data.json
+    });
+
+    abortController = new AbortController();
+
+    const prompt = await getPrompt(plugin, settings);
+
+    let message = '';
+    let isScroll = false;
+
+    const filteredMessageHistory = filterMessageHistory(messageHistory);
+    const messageHistoryAtIndex = removeConsecutiveUserRoles(filteredMessageHistory);
+
+    const messageContainerEl = document.querySelector('#messageContainer');
+    const messageContainerElDivs = document.querySelectorAll('#messageContainer div.userMessage, #messageContainer div.botMessage');
+
+    const botMessageDiv = displayLoadingBotMessage(settings);
+
+    messageContainerEl?.insertBefore(botMessageDiv, messageContainerElDivs[index+1]);
+    botMessageDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const targetUserMessage = messageContainerElDivs[index];
+    const targetBotMessage = targetUserMessage.nextElementSibling;
+
+    await getActiveFileContent(plugin, settings);
+    const referenceCurrentNoteContent = getCurrentNoteContent();
+
+    try {
+        const stream = await openai.chat.completions.create({
+            model: settings.general.model,
+            max_tokens: parseInt(settings.general.max_tokens),
+            temperature: parseInt(settings.general.temperature),
+            stream: true,
+            messages: [
+                { role: 'system', content: settings.general.system_role + prompt + referenceCurrentNoteContent},
+                ...messageHistoryAtIndex as ChatCompletionMessageParam[]
+            ],
+        });
+
+        for await (const part of stream) {
+
+            const content = part.choices[0]?.delta?.content || '';
+
+            message += content;
+
+            if (messageContainerEl) {
+                
+                const messageBlock = targetBotMessage?.querySelector('.messageBlock');
+                const loadingEl = targetBotMessage?.querySelector('#loading');
+
+                if (messageBlock) {
+                    if (loadingEl) {
+                        targetBotMessage?.removeChild(loadingEl);
+                    }
+        
+                    // Clear the messageBlock for re-rendering
+                    messageBlock.innerHTML = '';
+        
+                    // DocumentFragment to render markdown off-DOM
+                    const fragment = document.createDocumentFragment();
+                    const tempContainer = document.createElement('div');
+                    fragment.appendChild(tempContainer);
+        
+                    // Render the accumulated message to the temporary container
+                    await MarkdownRenderer.render(plugin.app, message, tempContainer, '/', plugin);
+        
+                    // Once rendering is complete, move the content to the actual message block
+                    while (tempContainer.firstChild) {
+                        messageBlock.appendChild(tempContainer.firstChild);
+                    }
+        
+                    addParagraphBreaks(messageBlock);
+
+                    const copyCodeBlocks = messageBlock.querySelectorAll('.copy-code-button') as NodeListOf<HTMLElement>;
+                    copyCodeBlocks.forEach((copyCodeBlock) => {
+                        copyCodeBlock.textContent = 'Copy';
+                        setIcon(copyCodeBlock, 'copy');
+                    });
+                }
+
+                messageContainerEl.addEventListener('wheel', (event: WheelEvent) => {
+                    // If the user scrolls up or down, stop auto-scrolling
+                    if (event.deltaY < 0 || event.deltaY > 0) {
+                        isScroll = true;
+                    }
+                });
+
+                if (!isScroll) {
+                    targetBotMessage?.scrollIntoView({ behavior: 'auto', block: 'start' });
+                }
+            }
+        
+            if (abortController.signal.aborted) {
+                new Notice('Error making API request: The user aborted a request.');
+                break;
+            }
+        }
+        addMessage(plugin, message, 'botMessage', settings, index);
+
+    } catch (error) {
+        const targetUserMessage = messageContainerElDivs[index];
+        const targetBotMessage = targetUserMessage.nextElementSibling;
+        targetBotMessage?.remove();
+
+        const messageContainer = document.querySelector('#messageContainer') as HTMLDivElement;
+        const botMessageDiv = displayErrorBotMessage(plugin, settings, messageHistory, error);
+        messageContainer.appendChild(botMessageDiv);
+    }
 }

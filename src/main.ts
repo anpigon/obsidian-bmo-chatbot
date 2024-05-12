@@ -3,6 +3,7 @@ import { BMOView, VIEW_TYPE_CHATBOT} from './view';
 import { BMOSettingTab } from './settings';
 import { promptSelectGenerateCommand, renameTitleCommand } from './components/editor/EditorCommands';
 import { colorToHex, isValidHexColor } from './utils/ColorConverter';
+import { DEFAULT_MODEL } from './constants';
 
 export interface BMOSettings {
 	profiles: {
@@ -118,7 +119,7 @@ export const DEFAULT_SETTINGS: BMOSettings = {
 		profileFolderPath: 'BMO/Profiles',
 	},
 	general: {
-		model: '',
+		model: DEFAULT_MODEL,
 		system_role: 'You are a helpful assistant.',
 		max_tokens: '',
 		temperature: '1.00',

@@ -17,7 +17,9 @@ import { fetchOpenAIAPIResponseStream,
         fetchGoogleGeminiResponse, 
         fetchAnthropicResponse, 
         fetchOpenRouterResponseStream,
-        fetchOpenRouterResponse} from './components/FetchModelResponse';
+        fetchOpenRouterResponse,
+        fetchSionicAIAPIResponseStream} from './components/FetchModelResponse';
+import { DEFAULT_MODEL } from './constants';
 
 export const VIEW_TYPE_CHATBOT = 'chatbot-view';
 export const ANTHROPIC_MODELS = ['claude-instant-1.2', 'claude-2.0', 'claude-2.1', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229'];
@@ -428,7 +430,10 @@ export class BMOView extends ItemView {
                 else {
                     await fetchOpenRouterResponse(this.plugin, this.settings, index);
                 }
+            } else if (DEFAULT_MODEL === this.settings.general.model) {
+                await fetchSionicAIAPIResponseStream(this.plugin, this.settings, index);
             }
+                
             else {
                 const errorMessage = 'Connection not found.';
 
