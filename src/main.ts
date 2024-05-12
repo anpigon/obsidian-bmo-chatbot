@@ -218,7 +218,7 @@ export const DEFAULT_SETTINGS: BMOSettings = {
 	toggleOpenRouterSettings: false,
 	toggleOllamaSettings: true,
 	toggleAdvancedSettings: false,
-	allModels: [],
+	allModels: [DEFAULT_MODEL],
 }
 
 export let checkActiveFile: TFile | null = null;
