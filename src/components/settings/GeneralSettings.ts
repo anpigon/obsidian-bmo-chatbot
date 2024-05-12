@@ -2,6 +2,7 @@ import { DropdownComponent, Notice, Setting, SettingTab, setIcon } from 'obsidia
 import BMOGPT, { DEFAULT_SETTINGS } from 'src/main';
 import { ANTHROPIC_MODELS } from 'src/view';
 import { fetchGoogleGeminiModels, fetchMistralModels, fetchOllamaModels, fetchOpenAIBaseModels, fetchOpenRouterModels, fetchRESTAPIURLModels } from '../FetchModelList';
+import { DEFAULT_MODEL } from 'src/constants';
 
 export async function addGeneralSettings(containerEl: HTMLElement, plugin: BMOGPT, SettingTab: SettingTab) {
     const toggleSettingContainer = containerEl.createDiv({ cls: 'toggleSettingContainer' });
@@ -195,6 +196,8 @@ async function populateDropdownWithModels(plugin: BMOGPT, dropdown: DropdownComp
         { type: 'openAI', condition: plugin.settings.APIConnections.openAI.APIKey },
         { type: 'openRouter', condition: plugin.settings.APIConnections.openRouter.APIKey },
     ];
+
+    addModelsToDropdownAndList([DEFAULT_MODEL]);
 
     // Process each source to fetch and add models
     for (const { type, condition } of modelSources) {
