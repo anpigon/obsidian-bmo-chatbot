@@ -1,8 +1,9 @@
 import { MarkdownRenderer, Modal, Notice, setIcon } from 'obsidian';
 import BMOGPT, { BMOSettings, checkActiveFile } from 'src/main';
 import { ANTHROPIC_MODELS, OPENAI_MODELS, activeEditor, filenameMessageHistoryJSON, lastCursorPosition, lastCursorPositionFile, messageHistory } from 'src/view';
-import { fetchOpenAIAPIResponseStream, fetchOpenAIAPIResponse, fetchOllamaResponse, fetchOllamaResponseStream, fetchAnthropicResponse, fetchRESTAPIURLResponse, fetchRESTAPIURLResponseStream, fetchMistralResponseStream, fetchMistralResponse, fetchGoogleGeminiResponse, fetchOpenRouterResponseStream, fetchOpenRouterResponse } from '../FetchModelResponse';
+import { fetchOpenAIAPIResponseStream, fetchOpenAIAPIResponse, fetchOllamaResponse, fetchOllamaResponseStream, fetchAnthropicResponse, fetchRESTAPIURLResponse, fetchRESTAPIURLResponseStream, fetchMistralResponseStream, fetchMistralResponse, fetchGoogleGeminiResponse, fetchOpenRouterResponseStream, fetchOpenRouterResponse, fetchSionicAIAPIResponseStream } from '../FetchModelResponse';
 import { getActiveFileContent } from '../editor/ReferenceCurrentNote';
+import { DEFAULT_MODEL } from 'src/constants';
 
 export function regenerateUserButton(plugin: BMOGPT, settings: BMOSettings) {
     const regenerateButton = document.createElement('button');
@@ -95,6 +96,13 @@ export function regenerateUserButton(plugin: BMOGPT, settings: BMOSettings) {
                 }
                 catch (error) {
                     console.error('Anthropic Error:', error);
+                }
+            } else if (DEFAULT_MODEL ===settings.general.model) {
+                try {
+                    await fetchSionicAIAPIResponseStream(plugin, settings, index);
+                }
+                catch (error) {
+                    console.error('Sionic Error:', error);
                 }
             }
         }
